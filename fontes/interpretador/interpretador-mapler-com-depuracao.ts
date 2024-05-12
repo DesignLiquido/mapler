@@ -1,7 +1,7 @@
-import { AcessoIndiceVariavel, Binario, Construto, Logico, Variavel } from '../../../construtos';
-import { EscrevaMesmaLinha, Escreva, Fazer, Leia } from '../../../declaracoes';
-import { ContinuarQuebra, Quebra } from '../../../quebras';
-import { InterpretadorComDepuracao } from '../../interpretador-com-depuracao';
+import { AcessoIndiceVariavel, Binario, Construto, Logico, Variavel } from '@designliquido/delegua/construtos';
+import { EscrevaMesmaLinha, Escreva, Fazer, Leia } from '@designliquido/delegua/declaracoes';
+import { ContinuarQuebra, Quebra } from '@designliquido/delegua/quebras';
+import { InterpretadorComDepuracao } from '@designliquido/delegua/interpretador';
 
 import * as comum from './comum';
 

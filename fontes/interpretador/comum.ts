@@ -1,9 +1,9 @@
-import { Binario, Construto, Logico } from '../../../construtos';
-import { VisitanteComumInterface, SimboloInterface, VariavelInterface } from '../../../interfaces';
-import { inferirTipoVariavel } from '../../inferenciador';
+import { Binario, Construto, Logico } from '@designliquido/delegua/construtos';
+import { VisitanteComumInterface, SimboloInterface, VariavelInterface } from '@designliquido/delegua/interfaces';
+import { ErroEmTempoDeExecucao } from '@designliquido/delegua/excecoes';
+import { inferirTipoVariavel } from '@designliquido/delegua/interpretador/inferenciador';
 
-import tiposDeSimbolos from '../../../tipos-de-simbolos/mapler';
-import { ErroEmTempoDeExecucao } from '../../../excecoes';
+import tiposDeSimbolos from '../tipos-de-simbolos/lexico-regular';
 
 async function avaliar(visitante: VisitanteComumInterface, expressao: Construto): Promise<any> {
     return await expressao.aceitar(visitante);
