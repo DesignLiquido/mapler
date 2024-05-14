@@ -8,6 +8,7 @@ import {
     Escreva,
     EscrevaMesmaLinha,
     Fazer,
+    FuncaoDeclaracao,
     Leia,
     Para,
     Se,
@@ -30,9 +31,18 @@ import {
 } from '@designliquido/delegua/construtos';
 import { SimboloInterface } from '@designliquido/delegua/interfaces';
 
-import tiposDeSimbolos from '@designliquido/delegua/tipos-de-simbolos/mapler';
+import tiposDeSimbolos from '../tipos-de-simbolos/lexico-regular';
 
 export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
+    lendoModulos: boolean;
+    modulos: string[];
+
+    constructor() {
+        super();
+        this.lendoModulos = false;
+        this.modulos = [];
+    }
+
     private criarVetorNDimensional(dimensoes: number[]) {
         if (dimensoes.length > 0) {
             const dimensao = dimensoes[0] + 1;
@@ -90,6 +100,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
                 tiposDeSimbolos.CARACTERE,
                 tiposDeSimbolos.INTEIRO,
                 tiposDeSimbolos.LOGICO,
+                tiposDeSimbolos.MODULO,
                 tiposDeSimbolos.REAL,
                 tiposDeSimbolos.VETOR
             )
@@ -115,92 +126,89 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         const inicializacoes = [];
 
         while (!this.verificarTipoSimboloAtual(tiposDeSimbolos.INICIO)) {
-            const simboloAtual = this.simbolos[this.atual];
-
-            switch (simboloAtual.tipo) {
-                // case tiposDeSimbolos.PROCEDIMENTO:
-                //     const dadosProcedimento = this.declaracaoProcedimento();
-                //     inicializacoes.push(dadosProcedimento);
-                //     break;
-                default:
-                    const dadosVariaveis = this.logicaComumParametroMapler();
-                    // Se chegou até aqui, variáveis são válidas.
-                    // Devem ser declaradas com um valor inicial padrão.
-                    for (let identificador of dadosVariaveis.identificadores) {
-                        switch (dadosVariaveis.tipo) {
-                            case tiposDeSimbolos.CADEIA:
-                            case tiposDeSimbolos.CARACTERE:
-                                inicializacoes.push(
-                                    new Var(
-                                        identificador,
-                                        new Literal(this.hashArquivo, Number(dadosVariaveis.simbolo.linha), ''),
-                                        'texto'
-                                    )
-                                );
-                                break;
-                            case tiposDeSimbolos.INTEIRO:
-                            case tiposDeSimbolos.REAL:
-                                inicializacoes.push(
-                                    new Var(
-                                        identificador,
-                                        new Literal(this.hashArquivo, Number(dadosVariaveis.simbolo.linha), 0),
-                                        'numero'
-                                    )
-                                );
-                                break;
-                            case tiposDeSimbolos.LOGICO:
-                                inicializacoes.push(
-                                    new Var(
-                                        identificador,
-                                        new Literal(this.hashArquivo, Number(dadosVariaveis.simbolo.linha), false),
-                                        'lógico'
-                                    )
-                                );
-                                break;
-                            case tiposDeSimbolos.VETOR:
-                                // TODO: Validar vetor
-                                this.consumir(
-                                    tiposDeSimbolos.COLCHETE_ESQUERDO,
-                                    'Esperado colchete esquerdo após palavra reservada "vetor".'
-                                );
-                                const dimensoes = this.validarDimensoesVetor();
-                                this.consumir(
-                                    tiposDeSimbolos.COLCHETE_DIREITO,
-                                    'Esperado colchete direito após declaração de dimensões de vetor.'
-                                );
-                                this.consumir(
-                                    tiposDeSimbolos.DE,
-                                    'Esperado palavra reservada "de" após declaração de dimensões de vetor.'
-                                );
-                                if (
-                                    !this.verificarSeSimboloAtualEIgualA(
-                                        tiposDeSimbolos.CARACTERE,
-                                        tiposDeSimbolos.INTEIRO,
-                                        tiposDeSimbolos.LOGICO,
-                                        tiposDeSimbolos.REAL,
-                                        tiposDeSimbolos.VETOR
-                                    )
-                                ) {
-                                    throw this.erro(
-                                        this.simbolos[this.atual],
-                                        'Tipo de variável não conhecido para inicialização de vetor.'
-                                    );
-                                }
-                                inicializacoes.push(
-                                    new Var(
-                                        identificador,
-                                        new Literal(
-                                            this.hashArquivo,
-                                            Number(dadosVariaveis.simbolo.linha),
-                                            this.criarVetorNDimensional(dimensoes)
-                                        ),
-                                        'vetor'
-                                    )
-                                );
-                                break;
+            const dadosVariaveis = this.logicaComumParametroMapler();
+            // Se chegou até aqui, variáveis são válidas.
+            // Devem ser declaradas com um valor inicial padrão.
+            for (let identificador of dadosVariaveis.identificadores) {
+                switch (dadosVariaveis.tipo) {
+                    case tiposDeSimbolos.CADEIA:
+                    case tiposDeSimbolos.CARACTERE:
+                        inicializacoes.push(
+                            new Var(
+                                identificador,
+                                new Literal(this.hashArquivo, Number(dadosVariaveis.simbolo.linha), ''),
+                                'texto'
+                            )
+                        );
+                        break;
+                    case tiposDeSimbolos.INTEIRO:
+                    case tiposDeSimbolos.REAL:
+                        inicializacoes.push(
+                            new Var(
+                                identificador,
+                                new Literal(this.hashArquivo, Number(dadosVariaveis.simbolo.linha), 0),
+                                'numero'
+                            )
+                        );
+                        break;
+                    case tiposDeSimbolos.LOGICO:
+                        inicializacoes.push(
+                            new Var(
+                                identificador,
+                                new Literal(this.hashArquivo, Number(dadosVariaveis.simbolo.linha), false),
+                                'lógico'
+                            )
+                        );
+                        break;
+                    case tiposDeSimbolos.MODULO:
+                        // Para efeitos práticos, declarar um módulo (função) como uma
+                        // variável apenas serve para dizer ao interpretador que as
+                        // declarações das funções propriamente ditas irão ao
+                        // final do código.
+                        this.modulos.push(identificador.lexema);
+                        break;
+                    case tiposDeSimbolos.VETOR:
+                        // TODO: Validar vetor
+                        this.consumir(
+                            tiposDeSimbolos.COLCHETE_ESQUERDO,
+                            'Esperado colchete esquerdo após palavra reservada "vetor".'
+                        );
+                        const dimensoes = this.validarDimensoesVetor();
+                        this.consumir(
+                            tiposDeSimbolos.COLCHETE_DIREITO,
+                            'Esperado colchete direito após declaração de dimensões de vetor.'
+                        );
+                        this.consumir(
+                            tiposDeSimbolos.DE,
+                            'Esperado palavra reservada "de" após declaração de dimensões de vetor.'
+                        );
+                        if (
+                            !this.verificarSeSimboloAtualEIgualA(
+                                tiposDeSimbolos.CARACTERE,
+                                tiposDeSimbolos.INTEIRO,
+                                tiposDeSimbolos.LOGICO,
+                                tiposDeSimbolos.REAL,
+                                tiposDeSimbolos.VETOR
+                            )
+                        ) {
+                            throw this.erro(
+                                this.simbolos[this.atual],
+                                'Tipo de variável não conhecido para inicialização de vetor.'
+                            );
                         }
-                    }
-                    break;
+                        inicializacoes.push(
+                            new Var(
+                                identificador,
+                                new Literal(
+                                    this.hashArquivo,
+                                    Number(dadosVariaveis.simbolo.linha),
+                                    this.criarVetorNDimensional(dimensoes)
+                                ),
+                                'vetor'
+                            )
+                        );
+                        break;
+                }
             }
 
             this.consumir(tiposDeSimbolos.PONTO_VIRGULA, "Esperado ';' após declaração de variável.");
@@ -222,7 +230,16 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
             return new Literal(this.hashArquivo, Number(simboloAtual.linha), true);
 
         if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.IDENTIFICADOR)) {
-            return new Variavel(this.hashArquivo, this.simbolos[this.atual - 1]);
+            const simboloIdentificador = this.simbolos[this.atual - 1];
+            if (this.modulos.includes(simboloIdentificador.lexema)) {
+                // TODO: Chamar função
+                /* return new Chamada(
+                    this.hashArquivo,
+                    new DeleguaFuncao()
+                ) */
+            }
+
+            return new Variavel(this.hashArquivo, simboloIdentificador);
         }
 
         if (
@@ -243,7 +260,6 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
             return new Agrupamento(this.hashArquivo, Number(simboloAtual.linha), expressao);
         }
 
-        //TODO: @Samuel
         if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.PONTO_VIRGULA)) {
             return null;
         }
@@ -266,7 +282,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
     ou(): Construto {
         let expressao = this.e();
 
-        while (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.OU /*, tiposDeSimbolos.XOU*/)) {
+        while (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.OU)) {
             const operador = this.simbolos[this.atual - 1];
             const direito = this.e();
             expressao = new Logico(this.hashArquivo, expressao, operador, direito);
@@ -313,17 +329,10 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
     blocoEscopo(): any[] {
         const declaracoes = [];
 
-        // while (![
-        //         tiposDeSimbolos.FIM_FUNCAO,
-        //         tiposDeSimbolos.FIM_PROCEDIMENTO
-        //     ].includes(this.simbolos[this.atual].tipo) && !this.estaNoFinal())
-        // {
-        //     declaracoes.push(this.declaracao());
-        // }
+        while (this.simbolos[this.atual].tipo !== tiposDeSimbolos.FIM) {
+            declaracoes.push(this.resolverDeclaracaoForaDeBloco());
+        }
 
-        // Se chegou até aqui, simplesmente consome o símbolo.
-        this.avancarEDevolverAnterior();
-        // this.consumir(tiposDeSimbolos.FIM_FUNCAO, "Esperado palavra-chave 'fimfuncao' após o bloco.");
         return declaracoes;
     }
 
@@ -353,15 +362,17 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         return expressao;
     }
 
-    corpoDaFuncao(tipo: any): FuncaoConstruto {
+    corpoDaFuncao(tipo: string): FuncaoConstruto {
         const simboloAnterior = this.simbolos[this.atual - 1];
-        this.consumir(tiposDeSimbolos.DOIS_PONTOS, 'Esperado dois-pontos após nome de função.');
 
-        // this.consumir(tiposDeSimbolos.QUEBRA_LINHA, "Esperado quebra de linha após tipo retornado por 'funcao'.");
-
-        this.validarSegmentoVariaveis();
+        // TODO: Verificar como Mapler lida com varíaveis em módulos.
+        // this.validarSegmentoVariaveis();
 
         const corpo = this.blocoEscopo();
+
+        this.consumir(tiposDeSimbolos.FIM, `Isso nunca dá erro.`);
+        this.consumir(tipo, `Esperado palavra reservada "${tipo.toLowerCase()}" após palavra reservada "fim" para finalização da declaração.`);
+        this.consumir(tiposDeSimbolos.PONTO_VIRGULA, `Esperado ponto-e-vírgula após palavras reservadas "fim ${tipo.toLowerCase()}."`);
 
         return new FuncaoConstruto(this.hashArquivo, Number(simboloAnterior.linha), null, corpo);
     }
@@ -450,8 +461,6 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
     declaracaoFazer(): Fazer {
         const simboloAtual = this.avancarEDevolverAnterior();
 
-        // this.consumir(tiposDeSimbolos.QUEBRA_LINHA, "Esperado quebra de linha após instrução 'repita'.");
-
         const declaracoes = [];
         do {
             declaracoes.push(this.resolverDeclaracaoForaDeBloco());
@@ -504,153 +513,32 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
     declaracaoLeia(): Leia {
         const simboloAtual = this.avancarEDevolverAnterior();
 
-        // this.consumir(tiposDeSimbolos.PARENTESE_ESQUERDO, "Esperado '(' antes do argumento em instrução `leia`.");
-
         const argumentos = [];
         do {
             argumentos.push(this.resolverDeclaracaoForaDeBloco());
         } while (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.PONTO_VIRGULA));
 
-        // this.consumir(tiposDeSimbolos.PARENTESE_DIREITO, "Esperado ')' após o argumento em instrução `leia`.");
-
-        // this.consumir(
-        //     tiposDeSimbolos.QUEBRA_LINHA,
-        //     'Esperado quebra de linha após fechamento de parênteses pós instrução `leia`.'
-        // );
-
         return new Leia(simboloAtual, argumentos);
+    }
+
+    /**
+     * Um módulo em Mapler nada mais é do que uma função.
+     * @returns Uma declaração de função.
+     */
+    protected declaracaoModulo(): FuncaoDeclaracao {
+        const simboloModulo = this.avancarEDevolverAnterior();
+
+        return new FuncaoDeclaracao(
+            simboloModulo,
+            this.corpoDaFuncao(simboloModulo.tipo),
+            null,
+            []
+        );
     }
 
     declaracaoPara(): Para {
         throw new Error('Método não implementado.');
-
-        // const simboloPara: SimboloInterface = this.avancarEDevolverAnterior();
-
-        // const variavelIteracao = this.consumir(
-        //     tiposDeSimbolos.IDENTIFICADOR,
-        //     "Esperado identificador de variável após 'para'."
-        // );
-
-        // this.consumir(tiposDeSimbolos.DE, "Esperado palavra reservada 'de' após variável de controle de 'para'.");
-
-        // const numeroInicio = this.consumir(
-        //     tiposDeSimbolos.NUMERO,
-        //     "Esperado literal ou variável após 'de' em declaração 'para'."
-        // );
-
-        // this.consumir(
-        //     tiposDeSimbolos.ATE,
-        //     "Esperado palavra reservada 'ate' após valor inicial do laço de repetição 'para'."
-        // );
-
-        // const numeroFim = this.consumir(
-        //     tiposDeSimbolos.NUMERO,
-        //     "Esperado literal ou variável após 'de' em declaração 'para'."
-        // );
-
-        // this.consumir(
-        //     tiposDeSimbolos.FACA,
-        //     "Esperado palavra reservada 'faca' após valor final do laço de repetição 'para'."
-        // );
-
-        // this.consumir(
-        //     tiposDeSimbolos.QUEBRA_LINHA,
-        //     "Esperado quebra de linha após palavra reservada 'faca' do laço de repetição 'para'."
-        // );
-
-        // const declaracoesBlocoPara = [];
-        // let simboloAtualBlocoPara: SimboloInterface = this.simbolos[this.atual];
-        // while (simboloAtualBlocoPara.tipo !== tiposDeSimbolos.FIM_PARA) {
-        //     declaracoesBlocoPara.push(this.declaracao());
-        //     simboloAtualBlocoPara = this.simbolos[this.atual];
-        // }
-
-        // this.consumir(tiposDeSimbolos.FIM_PARA, '');
-        // this.consumir(tiposDeSimbolos.QUEBRA_LINHA, "Esperado quebra de linha após palavra reservada 'fimpara'.");
-
-        // const corpo = new Bloco(
-        //     this.hashArquivo,
-        //     Number(simboloPara.linha) + 1,
-        //     declaracoesBlocoPara.filter((d) => d)
-        // );
-
-        // return new Para(
-        //     this.hashArquivo,
-        //     Number(simboloPara.linha),
-        //     new Atribuir(
-        //         this.hashArquivo,
-        //         variavelIteracao,
-        //         new Literal(this.hashArquivo, Number(simboloPara.linha), numeroInicio.literal)
-        //     ),
-        //     new Binario(
-        //         this.hashArquivo,
-        //         new Variavel(this.hashArquivo, variavelIteracao),
-        //         new Simbolo(tiposDeSimbolos.MENOR_IGUAL, '', '', Number(simboloPara.linha), this.hashArquivo),
-        //         new Literal(this.hashArquivo, Number(simboloPara.linha), numeroFim.literal)
-        //     ),
-        //     new Atribuir(
-        //         this.hashArquivo,
-        //         variavelIteracao,
-        //         new Binario(
-        //             this.hashArquivo,
-        //             new Variavel(this.hashArquivo, variavelIteracao),
-        //             new Simbolo(tiposDeSimbolos.ADICAO, '', null, Number(simboloPara.linha), this.hashArquivo),
-        //             new Literal(this.hashArquivo, Number(simboloPara.linha), 1)
-        //         )
-        //     ),
-        //     corpo
-        // );
     }
-
-    // logicaComumParametros(): ParametroInterface[] {
-    //     const parametros: ParametroInterface[] = [];
-    //     if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.PARENTESE_ESQUERDO)) {
-    //         while (!this.verificarTipoSimboloAtual(tiposDeSimbolos.PARENTESE_DIREITO)) {
-    //             const dadosParametros = this.logicaComumParametroMapler();
-    //             for (let parametro of dadosParametros.identificadores) {
-    //                 parametros.push({
-    //                     abrangencia: 'padrao',
-    //                     nome: parametro
-    //                 });
-    //             }
-    //         }
-
-    //         // Consumir parêntese direito
-    //         this.consumir(
-    //             tiposDeSimbolos.PARENTESE_DIREITO,
-    //             "Esperado parêntese direito para finalização da leitura de parâmetros."
-    //         )
-    //     }
-
-    //     return parametros;
-    // }
-
-    /**
-     * Procedimentos nada mais são do que funções que não retornam valor.
-     */
-    // declaracaoProcedimento() {
-    //     const simboloProcedimento: SimboloInterface = this.avancarEDevolverAnterior();
-
-    //     const nomeProcedimento = this.consumir(tiposDeSimbolos.IDENTIFICADOR,
-    //         "Esperado nome do procedimento após palavra-chave `procedimento`.");
-
-    //     // Parâmetros
-    //     const parametros = this.logicaComumParametros();
-
-    //     this.validarSegmentoVariaveis();
-    //     this.validarSegmentoInicio('procedimento');
-
-    //     const corpo = this.blocoEscopo();
-
-    //     return new FuncaoDeclaracao(
-    //         nomeProcedimento, new FuncaoConstruto(
-    //             this.hashArquivo,
-    //             Number(simboloProcedimento.linha),
-    //             parametros,
-    //             corpo.filter(d => d)
-    //         )
-    //     );
-    // }
 
     declaracaoSe(): Se {
         const simboloSe: SimboloInterface = this.avancarEDevolverAnterior();
@@ -718,18 +606,22 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
                 return this.declaracaoEnquanto();
             case tiposDeSimbolos.ESCREVER:
                 return this.declaracaoEscrevaMesmaLinha();
-            // case tiposDeSimbolos.FUNCAO:
-            //     return this.funcao('funcao');
-            // case tiposDeSimbolos.INTERROMPA:
-            //     return this.declaracaoInterrompa();
+            case tiposDeSimbolos.FIM:
+                this.lendoModulos = true;
+                this.avancarEDevolverAnterior();
+                return null;
             case tiposDeSimbolos.LER:
                 return this.declaracaoLeia();
+            case tiposDeSimbolos.MODULO:
+                if (!this.lendoModulos) {
+                    throw this.erro(simboloAtual, 'Esperado instrução "FIM" antes de começar a ler módulos.');
+                }
+
+                return this.declaracaoModulo();
             case tiposDeSimbolos.PARA:
                 return this.declaracaoPara();
             // case tiposDeSimbolos.PARENTESE_DIREITO:
             //     throw new Error('Não deveria estar caindo aqui.');
-            // case tiposDeSimbolos.PROCEDIMENTO:
-            //     return this.declaracaoProcedimento();
             case tiposDeSimbolos.REPITA:
                 return this.declaracaoFazer();
             case tiposDeSimbolos.SE:
@@ -751,6 +643,8 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         this.erros = [];
         this.atual = 0;
         this.blocos = 0;
+        this.lendoModulos = false;
+        this.modulos = [];
 
         this.hashArquivo = hashArquivo || 0;
         this.simbolos = retornoLexador?.simbolos || [];
@@ -760,7 +654,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         declaracoes = declaracoes.concat(this.validarSegmentoVariaveis());
         this.consumir(tiposDeSimbolos.INICIO, `Esperado expressão 'inicio' para marcar o inicio do programa.`);
 
-        while (!this.estaNoFinal() && this.simbolos[this.atual].tipo !== tiposDeSimbolos.FIM) {
+        while (!this.estaNoFinal()) {
             declaracoes.push(this.resolverDeclaracaoForaDeBloco());
         }
 
