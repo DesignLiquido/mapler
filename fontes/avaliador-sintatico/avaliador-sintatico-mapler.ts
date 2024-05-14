@@ -7,6 +7,7 @@ import {
     Escolha,
     Escreva,
     EscrevaMesmaLinha,
+    Expressao,
     Fazer,
     FuncaoDeclaracao,
     Leia,
@@ -32,6 +33,7 @@ import {
 import { SimboloInterface } from '@designliquido/delegua/interfaces';
 
 import tiposDeSimbolos from '../tipos-de-simbolos/lexico-regular';
+import { DeclaracaoFutura } from '../declaracoes/declaracao-futura';
 
 export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
     lendoModulos: boolean;
@@ -233,10 +235,8 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
             const simboloIdentificador = this.simbolos[this.atual - 1];
             if (this.modulos.includes(simboloIdentificador.lexema)) {
                 // TODO: Chamar função
-                /* return new Chamada(
-                    this.hashArquivo,
-                    new DeleguaFuncao()
-                ) */
+                return new DeclaracaoFutura(simboloIdentificador);
+                // return new Expressao(new Chamada(simboloAtual.hashArquivo, funcaoDeclaracao.funcao, null, []))
             }
 
             return new Variavel(this.hashArquivo, simboloIdentificador);
@@ -658,8 +658,28 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
             declaracoes.push(this.resolverDeclaracaoForaDeBloco());
         }
 
+        // Aqui precisamos trocar todas as declarações futuras pelas respectivas chamadas a módulos,
+        // e disparar erros caso essas declarações não existam.
+        const declaracoesModulos = declaracoes.filter(declaracao => declaracao instanceof FuncaoDeclaracao);
+
+        const declaracoesResolvidas = [].concat(declaracoesModulos);
+        for (let declaracao of declaracoes.filter((d) => d)) {
+            if (declaracao instanceof DeclaracaoFutura) {
+                const declaracaoFuncaoCorrespondente = declaracoesModulos.find(
+                    (declaracaoModulo: FuncaoDeclaracao) => declaracaoModulo.simbolo.lexema === declaracao.identificadorFuturo);
+
+                declaracoesResolvidas.push(
+                    new Expressao(
+                        new Chamada(declaracao.hashArquivo, declaracaoFuncaoCorrespondente.funcao, null, [])
+                    )
+                );
+            } else {
+                declaracoesResolvidas.push(declaracao);
+            }
+        }
+
         return {
-            declaracoes: declaracoes.filter((d) => d),
+            declaracoes: declaracoesResolvidas,
             erros: this.erros,
         } as RetornoAvaliadorSintatico<Declaracao>;
     }
