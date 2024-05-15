@@ -516,7 +516,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         const argumentos = [];
         do {
             argumentos.push(this.resolverDeclaracaoForaDeBloco());
-        } while (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.PONTO_VIRGULA));
+        } while (!this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.PONTO_VIRGULA));
 
         return new Leia(simboloAtual, argumentos);
     }
@@ -527,9 +527,10 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
      */
     protected declaracaoModulo(): FuncaoDeclaracao {
         const simboloModulo = this.avancarEDevolverAnterior();
+        const simboloNomeModulo = this.consumir(tiposDeSimbolos.IDENTIFICADOR, `Esperado nome do módulo após palavra reservada "modulo".`);
 
         return new FuncaoDeclaracao(
-            simboloModulo,
+            simboloNomeModulo,
             this.corpoDaFuncao(simboloModulo.tipo),
             null,
             []
@@ -658,28 +659,8 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
             declaracoes.push(this.resolverDeclaracaoForaDeBloco());
         }
 
-        // Aqui precisamos trocar todas as declarações futuras pelas respectivas chamadas a módulos,
-        // e disparar erros caso essas declarações não existam.
-        const declaracoesModulos = declaracoes.filter(declaracao => declaracao instanceof FuncaoDeclaracao);
-
-        const declaracoesResolvidas = [].concat(declaracoesModulos);
-        for (let declaracao of declaracoes.filter((d) => d)) {
-            if (declaracao instanceof DeclaracaoFutura) {
-                const declaracaoFuncaoCorrespondente = declaracoesModulos.find(
-                    (declaracaoModulo: FuncaoDeclaracao) => declaracaoModulo.simbolo.lexema === declaracao.identificadorFuturo);
-
-                declaracoesResolvidas.push(
-                    new Expressao(
-                        new Chamada(declaracao.hashArquivo, declaracaoFuncaoCorrespondente.funcao, null, [])
-                    )
-                );
-            } else {
-                declaracoesResolvidas.push(declaracao);
-            }
-        }
-
         return {
-            declaracoes: declaracoesResolvidas,
+            declaracoes: declaracoes.filter(d => d),
             erros: this.erros,
         } as RetornoAvaliadorSintatico<Declaracao>;
     }
