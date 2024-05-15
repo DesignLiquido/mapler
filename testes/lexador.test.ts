@@ -1,4 +1,4 @@
-import { LexadorMapler } from '@designliquido/delegua/lexador/dialetos';
+import { LexadorMapler } from '../fontes/lexador';
 
 import tiposDeSimbolos from "../fontes/tipos-de-simbolos/lexico-regular";
 

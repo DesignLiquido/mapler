@@ -1,16 +1,19 @@
-import { AvaliadorSintaticoMapler } from '@designliquido/delegua/avaliador-sintatico/dialetos';
-import { InterpretadorMapler } from "@designliquido/delegua/interpretador/dialetos";
-import { LexadorMapler } from '@designliquido/delegua/lexador/dialetos';
+import { AvaliadorSintaticoMapler } from '../fontes/avaliador-sintatico';
+import { InterpretadorMapler } from "../fontes/interpretador";
+import { LexadorMapler } from '../fontes/lexador';
+import { ResolvedorMapler } from '../fontes/resolvedor';
 
 describe('Interpretador', () => {
     describe('interpretar()', () => {
         let lexador: LexadorMapler;
         let avaliadorSintatico: AvaliadorSintaticoMapler;
+        let resolvedor: ResolvedorMapler;
         let interpretador: InterpretadorMapler;
 
         beforeEach(() => {
             lexador = new LexadorMapler();
             avaliadorSintatico = new AvaliadorSintaticoMapler();
+            resolvedor = new ResolvedorMapler();
             interpretador = new InterpretadorMapler(process.cwd());
         });
 
@@ -21,9 +24,10 @@ describe('Interpretador', () => {
                     'inicio',
                     'fim'
                 ], -1);
+                
                 const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
-
-                const retornoInterpretador = await interpretador.interpretar(retornoAvaliadorSintatico.declaracoes);
+                const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
+                const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
                 expect(retornoInterpretador.erros).toHaveLength(0);
             });
@@ -32,9 +36,10 @@ describe('Interpretador', () => {
                 const retornoLexador = lexador.mapear([
                     'variaveis inicio escrever "olá mundo"; fim',
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
 
-                const retornoInterpretador = await interpretador.interpretar(retornoAvaliadorSintatico.declaracoes);
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
+                const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
                 expect(retornoInterpretador.erros).toHaveLength(0);
             });
@@ -46,9 +51,10 @@ describe('Interpretador', () => {
                     'escrever "olá mundo";',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
 
-                const retornoInterpretador = await interpretador.interpretar(retornoAvaliadorSintatico.declaracoes);
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
+                const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
                 expect(retornoInterpretador.erros).toHaveLength(0);
             });
@@ -63,9 +69,10 @@ describe('Interpretador', () => {
                     'escrever "Minha idade é: ", idade;',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
 
-                const retornoInterpretador = await interpretador.interpretar(retornoAvaliadorSintatico.declaracoes);
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
+                const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
                 expect(retornoInterpretador.erros).toHaveLength(0);
             });
@@ -83,9 +90,10 @@ describe('Interpretador', () => {
                     'escrever nao falso;',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
 
-                const retornoInterpretador = await interpretador.interpretar(retornoAvaliadorSintatico.declaracoes);
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
+                const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
                 expect(retornoInterpretador.erros).toHaveLength(0);
             });
@@ -102,9 +110,10 @@ describe('Interpretador', () => {
                     "fim enquanto;",
                     "fim"
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
 
-                const retornoInterpretador = await interpretador.interpretar(retornoAvaliadorSintatico.declaracoes);
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
+                const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
                 expect(retornoInterpretador.erros).toHaveLength(0);
             });
@@ -118,9 +127,10 @@ describe('Interpretador', () => {
                     "fim se;",
                     "fim",
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
 
-                const retornoInterpretador = await interpretador.interpretar(retornoAvaliadorSintatico.declaracoes);
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
+                const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
                 expect(retornoInterpretador.erros).toHaveLength(0);
             });
@@ -136,15 +146,20 @@ describe('Interpretador', () => {
                     "fim se;",
                     "fim",
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
 
-                const retornoInterpretador = await interpretador.interpretar(retornoAvaliadorSintatico.declaracoes);
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
+                const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
                 expect(retornoInterpretador.erros).toHaveLength(0);
             });
 
-            // TODO: https://github.com/DesignLiquido/delegua/issues/573
-            it.skip('Modulo', async () => {
+            it('Modulo', async () => {
+                let _saidas = "";
+                interpretador.funcaoDeRetornoMesmaLinha = (saida: string) => {
+                    _saidas += saida;
+                }
+
                 const retornoLexador = lexador.mapear([
                     "variaveis",
                     "dizerOla: modulo;",
@@ -155,11 +170,13 @@ describe('Interpretador', () => {
                     "escrever \"Olá, mundo!\";",
                     "fim modulo;"
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
 
-                const retornoInterpretador = await interpretador.interpretar(retornoAvaliadorSintatico.declaracoes);
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
+                const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
                 expect(retornoInterpretador.erros).toHaveLength(0);
+                expect(_saidas).toBe('Olá, mundo!');
             });
         });
     });

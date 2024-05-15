@@ -7,7 +7,6 @@ import {
     Escolha,
     Escreva,
     EscrevaMesmaLinha,
-    Expressao,
     Fazer,
     FuncaoDeclaracao,
     Leia,
@@ -22,7 +21,6 @@ import {
     AtribuicaoPorIndice,
     Atribuir,
     Binario,
-    Chamada,
     Construto,
     FormatacaoEscrita,
     FuncaoConstruto,
@@ -32,8 +30,9 @@ import {
 } from '@designliquido/delegua/construtos';
 import { SimboloInterface } from '@designliquido/delegua/interfaces';
 
-import tiposDeSimbolos from '../tipos-de-simbolos/lexico-regular';
 import { DeclaracaoFutura } from '../declaracoes/declaracao-futura';
+
+import tiposDeSimbolos from '../tipos-de-simbolos/lexico-regular';
 
 export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
     lendoModulos: boolean;
@@ -374,7 +373,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         this.consumir(tipo, `Esperado palavra reservada "${tipo.toLowerCase()}" após palavra reservada "fim" para finalização da declaração.`);
         this.consumir(tiposDeSimbolos.PONTO_VIRGULA, `Esperado ponto-e-vírgula após palavras reservadas "fim ${tipo.toLowerCase()}."`);
 
-        return new FuncaoConstruto(this.hashArquivo, Number(simboloAnterior.linha), null, corpo);
+        return new FuncaoConstruto(this.hashArquivo, Number(simboloAnterior.linha), [], corpo);
     }
 
     declaracaoEnquanto(): Enquanto {
@@ -523,6 +522,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
 
     /**
      * Um módulo em Mapler nada mais é do que uma função.
+     * Um módulo aparentemente não especifica tipo de retorno.
      * @returns Uma declaração de função.
      */
     protected declaracaoModulo(): FuncaoDeclaracao {
