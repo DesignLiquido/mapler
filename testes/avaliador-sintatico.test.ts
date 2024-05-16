@@ -45,22 +45,6 @@ describe('Avaliador sintático (Mapler)', () => {
                 expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(1);
             });
 
-            it('Para', () => {
-                const retornoLexador = lexador.mapear([
-                    'variaveis',
-                    '    i: inteiro;',
-                    'inicio',
-                    '    para i de 0 ate 10 passo 1 faca',
-                    '        escrever i;',
-                    '    fim para;',
-                    'fim'
-                ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
-    
-                expect(retornoAvaliadorSintatico).toBeTruthy();
-                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(2);
-            });
-    
             it('Módulos', () => {
                 const retornoLexador = lexador.mapear([
                     'variaveis',
@@ -133,6 +117,42 @@ describe('Avaliador sintático (Mapler)', () => {
     
                 expect(retornoAvaliadorSintatico).toBeTruthy();
                 expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(11);
+            });
+
+            it('Para', () => {
+                const retornoLexador = lexador.mapear([
+                    'variaveis',
+                    '    i: inteiro;',
+                    'inicio',
+                    '    para i de 0 ate 10 passo 1 faca',
+                    '        escrever i;',
+                    '    fim para;',
+                    'fim'
+                ], -1);
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+    
+                expect(retornoAvaliadorSintatico).toBeTruthy();
+                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(2);
+            });
+    
+            it('Repita', () => {
+                const retornoLexador = lexador.mapear([
+                    'variaveis',
+                    '    x:inteiro;',
+                    'inicio',
+                    '    x<-1;',
+                    '    // Executa o trecho de código primeiro',
+                    '    // Depois repete enquanto a condição for verdadeira',
+                    '    repita',
+                    '        escrever x;',
+                    '        x<- x+1;',
+                    '    ate (x <= 5);',
+                    'fim'
+                ], -1);
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+    
+                expect(retornoAvaliadorSintatico).toBeTruthy();
+                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(3);
             });
         });
     });
