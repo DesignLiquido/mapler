@@ -7,6 +7,7 @@ import {
     Escolha,
     Escreva,
     EscrevaMesmaLinha,
+    Expressao,
     Fazer,
     FuncaoDeclaracao,
     Leia,
@@ -22,10 +23,12 @@ import {
     Atribuir,
     Binario,
     Construto,
+    FimPara,
     FormatacaoEscrita,
     FuncaoConstruto,
     Literal,
     Logico,
+    Unario,
     Variavel,
 } from '@designliquido/delegua/construtos';
 import { SimboloInterface } from '@designliquido/delegua/interfaces';
@@ -33,6 +36,7 @@ import { SimboloInterface } from '@designliquido/delegua/interfaces';
 import { DeclaracaoFutura } from '../declaracoes/declaracao-futura';
 
 import tiposDeSimbolos from '../tipos-de-simbolos/lexico-regular';
+import { Simbolo } from '@designliquido/delegua';
 
 export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
     lendoModulos: boolean;
@@ -538,7 +542,118 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
     }
 
     declaracaoPara(): Para {
-        throw new Error('Método não implementado.');
+        const simboloPara: SimboloInterface = this.avancarEDevolverAnterior();
+        const simboloVariavelIteracao: SimboloInterface = this.consumir(tiposDeSimbolos.IDENTIFICADOR, `Esperado identificador após palavra reservada "para".`);
+        this.consumir(tiposDeSimbolos.DE, `Esperado paravra reservada "de" após identificador em declaração "para".`);
+        const literalOuVariavelInicio = this.expressao();
+        this.consumir(tiposDeSimbolos.ATE, `Esperado paravra reservada "ate" após literal ou identificador de estado inicial em declaração "para".`);
+        const literalOuVariavelFim = this.expressao();
+        this.consumir(tiposDeSimbolos.PASSO, `Esperado paravra reservada "passo" após literal ou identificador de estado final em declaração "para".`);
+
+        let operadorCondicao = new Simbolo(
+            tiposDeSimbolos.MENOR_IGUAL,
+            '',
+            '',
+            Number(simboloPara.linha),
+            this.hashArquivo
+        );
+        let operadorCondicaoIncremento = new Simbolo(
+            tiposDeSimbolos.MENOR,
+            '',
+            '',
+            Number(simboloPara.linha),
+            this.hashArquivo
+        );
+
+        // Se o valor do passo é uma variável, o passo só pode ser resolvido em
+        // tempo de execução.
+        let passo: Construto;
+        let resolverIncrementoEmExecucao = false;
+        if (literalOuVariavelInicio instanceof Literal && literalOuVariavelFim instanceof Literal) {
+            passo = this.unario();
+            if (passo.hasOwnProperty('operador') && (passo as Unario).operador.tipo === tiposDeSimbolos.SUBTRACAO) {
+                operadorCondicao = new Simbolo(
+                    tiposDeSimbolos.MAIOR_IGUAL,
+                    '',
+                    '',
+                    Number(simboloPara.linha),
+                    this.hashArquivo
+                );
+                operadorCondicaoIncremento = new Simbolo(
+                    tiposDeSimbolos.MAIOR,
+                    '',
+                    '',
+                    Number(simboloPara.linha),
+                    this.hashArquivo
+                );
+            }
+        } else {
+            // Passo e operador de condição precisam ser resolvidos em tempo de execução.
+            passo = undefined;
+            operadorCondicao = undefined;
+            operadorCondicaoIncremento = undefined;
+            resolverIncrementoEmExecucao = true;
+        }
+
+        this.consumir(tiposDeSimbolos.FACA, `Esperado palavra reservada "faca" após literal ou identificador de estado inicial em declaração "para".`);
+
+        const declaracoesBlocoPara = [];
+        let simboloAtualBlocoPara: SimboloInterface = this.simbolos[this.atual];
+        while (simboloAtualBlocoPara.tipo !== tiposDeSimbolos.FIM) {
+            declaracoesBlocoPara.push(this.resolverDeclaracaoForaDeBloco());
+            simboloAtualBlocoPara = this.simbolos[this.atual];
+        }
+
+        this.consumir(tiposDeSimbolos.FIM, '');
+        this.consumir(tiposDeSimbolos.PARA, "Esperado palavra reservada 'para' após palavra reservada 'fim' para encerrar declaração 'para'.");
+        this.consumir(tiposDeSimbolos.PONTO_VIRGULA, "Esperado ponto-e-vírgula após palavra reservada 'para' para encerrar declaração 'para'.");
+
+        const corpo = new Bloco(
+            this.hashArquivo,
+            Number(simboloPara.linha) + 1,
+            declaracoesBlocoPara.filter((d) => d)
+        );
+        
+        const declaracaoPara = new Para(
+            this.hashArquivo, 
+            Number(simboloPara.linha), 
+            // Inicialização.
+            new Atribuir(this.hashArquivo, simboloVariavelIteracao, literalOuVariavelInicio),
+            // Condição.
+            new Binario(
+                this.hashArquivo,
+                new Variavel(this.hashArquivo, simboloVariavelIteracao),
+                operadorCondicao,
+                literalOuVariavelFim
+            ),
+            // Incremento, feito em construto especial `FimPara`.
+            new FimPara(
+                this.hashArquivo,
+                Number(simboloPara.linha),
+                new Binario(
+                    this.hashArquivo,
+                    new Variavel(this.hashArquivo, simboloVariavelIteracao),
+                    operadorCondicaoIncremento,
+                    literalOuVariavelFim
+                ),
+                new Expressao(
+                    new Atribuir(
+                        this.hashArquivo,
+                        simboloVariavelIteracao,
+                        new Binario(
+                            this.hashArquivo,
+                            new Variavel(this.hashArquivo, simboloVariavelIteracao),
+                            new Simbolo(tiposDeSimbolos.ADICAO, '', null, Number(simboloPara.linha), this.hashArquivo),
+                            passo
+                        )
+                    )
+                )
+            ),
+            corpo
+        );
+
+        declaracaoPara.resolverIncrementoEmExecucao = resolverIncrementoEmExecucao;
+        return declaracaoPara;
     }
 
     declaracaoSe(): Se {

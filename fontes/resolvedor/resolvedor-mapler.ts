@@ -286,7 +286,7 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     }
 
     visitarExpressaoRetornar(declaracao: Retorna): Promise<RetornoQuebra> {
-        return Promise.resolve(null);
+        return Promise.resolve(declaracao);
     }
 
     visitarExpressaoSuper(expressao: Super<string>): void | Promise<any> {
