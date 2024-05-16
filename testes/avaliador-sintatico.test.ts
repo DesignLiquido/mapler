@@ -154,6 +154,30 @@ describe('Avaliador sintático (Mapler)', () => {
                 expect(retornoAvaliadorSintatico).toBeTruthy();
                 expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(3);
             });
+
+            it('Se', () => {
+                const retornoLexador = lexador.mapear([
+                    'variaveis',
+                    '    idade: inteiro;',
+                    'inicio',
+                    '    idade <- 17;',
+                    '    se idade >= 16 entao',
+                    '        escrever "Pode votar!";',
+                    '        se idade >= 18 entao',
+                    '            escrever "Pode votar e dirigir também!";',
+                    '        senao',
+                    '            escrever "Pode votar, mas não dirigir!";',
+                    '        fim se;',
+                    '    senao',
+                    '        escrever "Não pode votar, nem dirigir!";',
+                    '    fim se;',
+                    'fim'
+                ], -1);
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+    
+                expect(retornoAvaliadorSintatico).toBeTruthy();
+                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(3);
+            });
         });
     });
 });
