@@ -12,6 +12,26 @@ describe('Avaliador sintático (Mapler)', () => {
         });
 
         describe('Casos de Sucesso', () => {
+            it('Enquanto', () => {
+                const retornoLexador = lexador.mapear([
+                    'variaveis',
+                    '    i: inteiro;',
+                    'inicio',
+                    '    i <- 1;',
+                    '    // Enquanto essa condição for verdadeira',
+                    '    enquanto i <= 5 faca',
+                    '        // Execute esse trecho de código',
+                    '        escrever i;',
+                    '        i <- i + 1;',
+                    '    fim enquanto;',
+                    'fim'
+                ], -1);
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+    
+                expect(retornoAvaliadorSintatico).toBeTruthy();
+                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(3);
+            });
+
             it('Olá Mundo', () => {
                 const retornoLexador = lexador.mapear([
                     'variaveis',
