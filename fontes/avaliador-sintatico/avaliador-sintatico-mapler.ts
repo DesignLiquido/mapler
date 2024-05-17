@@ -132,6 +132,11 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         const inicializacoes = [];
 
         while (!this.verificarTipoSimboloAtual(tiposDeSimbolos.INICIO)) {
+            if (this.simbolos[this.atual].tipo === tiposDeSimbolos.COMENTARIO) {
+                inicializacoes.push(this.declaracaoComentario());
+                continue;
+            }
+
             const dadosVariaveis = this.logicaComumParametroMapler();
             // Se chegou até aqui, variáveis são válidas.
             // Devem ser declaradas com um valor inicial padrão.
@@ -779,6 +784,10 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         this.simbolos = retornoLexador?.simbolos || [];
 
         let declaracoes = [];
+        while (this.simbolos[this.atual].tipo === tiposDeSimbolos.COMENTARIO) {
+            declaracoes.push(this.declaracaoComentario());
+        }
+
         this.consumir(tiposDeSimbolos.VARIAVEIS, "Esperado expressão 'variaveis' para inicializar programa.");
         declaracoes = declaracoes.concat(this.validarSegmentoVariaveis());
         this.consumir(tiposDeSimbolos.INICIO, `Esperado expressão 'inicio' para marcar o inicio do programa.`);

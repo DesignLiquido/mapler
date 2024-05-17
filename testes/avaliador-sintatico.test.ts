@@ -62,7 +62,7 @@ describe('Avaliador sintático (Mapler)', () => {
                 const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
     
                 expect(retornoAvaliadorSintatico).toBeTruthy();
-                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(1);
+                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(9);
             });
 
             it('Módulos', () => {
