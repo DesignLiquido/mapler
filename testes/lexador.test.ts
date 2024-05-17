@@ -35,6 +35,26 @@ describe('Lexador (Mapler)', () => {
                     ])
                 );
             });
+
+            it('Sucesso - código com comentários', () => {
+                const resultado = lexador.mapear([
+                    '// Estrutura Básica:',
+                    'variaveis',
+                    '    // Nesta área declaramos as variáveis',
+                    '    // utilizadas no algoritmo',
+                    '    var_nome: cadeia;',
+                    'inicio // A partir daqui começa o algoritmo',
+                    '    escrever "Digite seu nome:";',
+                    '    ler var_nome;',
+                    '    escrever "Olá ", var_nome;',
+                    'fim // Esta instrução indica o fim do algoritmo'
+                ], -1);
+
+                expect(resultado).toBeTruthy();
+                expect(resultado.simbolos).toHaveLength(23);
+                const comentarios = resultado.simbolos.filter(s => s.tipo === tiposDeSimbolos.COMENTARIO);
+                expect(comentarios).toHaveLength(5);
+            });
         });
     });
 });

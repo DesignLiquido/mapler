@@ -56,6 +56,18 @@ export class LexadorMapler extends LexadorBaseLinhaUnica {
         }
     }
 
+    comentarioUmaLinha(): void {
+        this.avancar();
+        let ultimoAtual = this.atual;
+        while (this.codigo.charAt(this.atual) !== '\n' && !this.eFinalDoCodigo()) {
+            ultimoAtual = this.atual;
+            this.avancar();
+        }
+
+        const conteudo = this.codigo.substring(this.inicioSimbolo + 2, ultimoAtual);
+        this.adicionarSimbolo(tiposDeSimbolos.COMENTARIO, conteudo.trim());
+    }
+
     analisarToken(): void {
         const caractere = this.simboloAtual();
 
@@ -134,10 +146,6 @@ export class LexadorMapler extends LexadorBaseLinhaUnica {
                 this.adicionarSimbolo(tiposDeSimbolos.ADICAO);
                 this.avancar();
                 break;
-            // case '%':
-            //     this.adicionarSimbolo(tiposDeSimbolos.MODULO);
-            //     this.avancar();
-            //     break;
             case '*':
                 this.adicionarSimbolo(tiposDeSimbolos.MULTIPLICACAO);
                 this.avancar();
@@ -146,7 +154,7 @@ export class LexadorMapler extends LexadorBaseLinhaUnica {
                 this.avancar();
                 switch (this.simboloAtual()) {
                     case '/':
-                        while (this.simboloAtual() != '\n' && !this.eFinalDoCodigo()) this.avancar();
+                        this.comentarioUmaLinha();
                         break;
                     default:
                         this.adicionarSimbolo(tiposDeSimbolos.DIVISAO);
