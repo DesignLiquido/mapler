@@ -22,6 +22,7 @@ import {
     AtribuicaoPorIndice,
     Atribuir,
     Binario,
+    Comentario,
     Construto,
     FimPara,
     FormatacaoEscrita,
@@ -380,6 +381,16 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         return new FuncaoConstruto(this.hashArquivo, Number(simboloAnterior.linha), [], corpo);
     }
 
+    declaracaoComentario(): Comentario {
+        const simboloComentario = this.avancarEDevolverAnterior();
+        return new Comentario(
+            simboloComentario.hashArquivo, 
+            simboloComentario.linha, 
+            simboloComentario.literal, 
+            false
+        );
+    }
+
     declaracaoEnquanto(): Enquanto {
         const simboloAtual = this.avancarEDevolverAnterior();
 
@@ -718,6 +729,8 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
     resolverDeclaracaoForaDeBloco(): Declaracao | Declaracao[] | Construto | Construto[] | any {
         const simboloAtual = this.simbolos[this.atual];
         switch (simboloAtual.tipo) {
+            case tiposDeSimbolos.COMENTARIO:
+                return this.declaracaoComentario();
             case tiposDeSimbolos.ENQUANTO:
                 return this.declaracaoEnquanto();
             case tiposDeSimbolos.ESCREVER:

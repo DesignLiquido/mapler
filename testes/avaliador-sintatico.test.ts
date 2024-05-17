@@ -45,6 +45,26 @@ describe('Avaliador sintático (Mapler)', () => {
                 expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(1);
             });
 
+            it('Código com comentários', () => {
+                const retornoLexador = lexador.mapear([
+                    '// Estrutura Básica:',
+                    'variaveis',
+                    '    // Nesta área declaramos as variáveis',
+                    '    // utilizadas no algoritmo',
+                    '    var_nome: cadeia;',
+                    'inicio // A partir daqui começa o algoritmo',
+                    '    escrever "Digite seu nome:";',
+                    '    ler var_nome;',
+                    '    escrever "Olá ", var_nome;',
+                    'fim // Esta instrução indica o fim do algoritmo'
+                ], -1);
+
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+    
+                expect(retornoAvaliadorSintatico).toBeTruthy();
+                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(1);
+            });
+
             it('Módulos', () => {
                 const retornoLexador = lexador.mapear([
                     'variaveis',
