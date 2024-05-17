@@ -156,7 +156,7 @@ describe('Interpretador', () => {
 
             it('Modulo', async () => {
                 let _saidas = "";
-                interpretador.funcaoDeRetornoMesmaLinha = (saida: string) => {
+                interpretador.funcaoDeRetorno = (saida: string) => {
                     _saidas += saida;
                 }
 

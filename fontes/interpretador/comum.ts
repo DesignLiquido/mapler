@@ -1,12 +1,31 @@
+import { Escreva, EscrevaMesmaLinha } from '@designliquido/delegua';
 import { Binario, Construto, Logico } from '@designliquido/delegua/construtos';
 import { VisitanteComumInterface, SimboloInterface, VariavelInterface } from '@designliquido/delegua/interfaces';
 import { ErroEmTempoDeExecucao } from '@designliquido/delegua/excecoes';
 import { inferirTipoVariavel } from '@designliquido/delegua/interpretador/inferenciador';
 
+import { InterpretadorMapler } from './interpretador-mapler';
+
 import tiposDeSimbolos from '../tipos-de-simbolos/lexico-regular';
 
 async function avaliar(visitante: VisitanteComumInterface, expressao: Construto): Promise<any> {
     return await expressao.aceitar(visitante);
+}
+
+async function avaliarArgumentosEscrevaMapler(
+    interpretador: InterpretadorMapler,
+    argumentos: Construto[]
+): Promise<string> {
+    let formatoTexto: string = '';
+
+    for (const argumento of argumentos) {
+        const resultadoAvaliacao = await interpretador.avaliar(argumento);
+        let valor = resultadoAvaliacao?.hasOwnProperty('valor') ? resultadoAvaliacao.valor : resultadoAvaliacao;
+
+        formatoTexto += `${interpretador.paraTexto(valor)}`;
+    }
+
+    return formatoTexto;
 }
 
 function eIgual(esquerda: VariavelInterface | any, direita: VariavelInterface | any): boolean {
@@ -137,6 +156,50 @@ export async function visitarExpressaoBinaria(
         }
     } catch (erro: any) {
         return Promise.reject(erro);
+    }
+}
+
+/**
+ * Execução de uma escrita na saída padrão, sem quebras de linha.
+ * Implementada para alguns dialetos, como Mapler.
+ *
+ * Como `readline.question` sobrescreve o que foi escrito antes, aqui
+ * definimos `this.mensagemPrompt` para uso com `leia`.
+ * No Mapler é muito comum usar `escreva()` seguido de `leia()` para
+ * gerar um prompt na mesma linha.
+ * @param declaracao A declaração.
+ * @returns Sempre nulo, por convenção de visita.
+ */
+export async function visitarDeclaracaoEscrevaMesmaLinha(
+    interpretador: InterpretadorMapler,
+    declaracao: EscrevaMesmaLinha
+): Promise<any> {
+    try {
+        const formatoTexto: string = await avaliarArgumentosEscrevaMapler(interpretador, declaracao.argumentos);
+        this.mensagemPrompt = formatoTexto;
+        interpretador.funcaoDeRetornoMesmaLinha(formatoTexto);
+        return null;
+    } catch (erro: any) {
+        interpretador.erros.push(erro);
+    }
+}
+
+/**
+ * Execução de uma escrita na saída configurada, que pode ser `console` (padrão) ou
+ * alguma função para escrever numa página Web.
+ * @param declaracao A declaração.
+ * @returns Sempre nulo, por convenção de visita.
+ */
+export async function visitarDeclaracaoEscreva(
+    interpretador: InterpretadorMapler,
+    declaracao: Escreva
+): Promise<any> {
+    try {
+        const formatoTexto: string = await avaliarArgumentosEscrevaMapler(interpretador, declaracao.argumentos);
+        interpretador.funcaoDeRetorno(formatoTexto);
+        return null;
+    } catch (erro: any) {
+        interpretador.erros.push(erro);
     }
 }
 

@@ -102,7 +102,7 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     }
 
     visitarDeclaracaoDeExpressao(declaracao: Expressao): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarDeclaracaoDefinicaoFuncao(declaracao: FuncaoDeclaracao): void {
@@ -110,19 +110,19 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     }
 
     visitarDeclaracaoEnquanto(declaracao: Enquanto): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarDeclaracaoEscolha(declaracao: Escolha): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarDeclaracaoEscreva(declaracao: Escreva): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarDeclaracaoEscrevaMesmaLinha(declaracao: EscrevaMesmaLinha): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     async visitarDeclaracaoFazer(declaracao: Fazer): Promise<any> {
@@ -148,12 +148,18 @@ export class ResolvedorMapler implements VisitanteComumInterface {
         return Promise.resolve();
     }
 
-    visitarDeclaracaoPara(declaracao: Para): Promise<any> {
-        return Promise.resolve();
+    async visitarDeclaracaoPara(declaracao: Para): Promise<any> {
+        if (declaracao.inicializador) {
+            declaracao.inicializador = await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao.inicializador as Declaracao);
+        }
+        
+        declaracao.condicao = await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao.condicao);
+        
+        return declaracao;
     }
 
     visitarDeclaracaoParaCada(declaracao: ParaCada): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     async visitarDeclaracaoSe(declaracao: Se): Promise<any> {

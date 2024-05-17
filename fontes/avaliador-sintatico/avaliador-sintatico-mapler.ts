@@ -342,7 +342,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
             declaracoes.push(this.resolverDeclaracaoForaDeBloco());
         }
 
-        return declaracoes;
+        return declaracoes.filter(d => d);
     }
 
     chamar(): Construto {
@@ -462,7 +462,11 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
     }
 
     declaracaoEscreva(): Escreva {
-        throw new Error('Método não implementado.');
+        const simboloAtual = this.avancarEDevolverAnterior();
+
+        const argumentos = this.logicaComumEscreva();
+
+        return new Escreva(Number(simboloAtual.linha), this.hashArquivo, argumentos);
     }
 
     declaracaoEscrevaMesmaLinha(): EscrevaMesmaLinha {
@@ -739,7 +743,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
             case tiposDeSimbolos.ENQUANTO:
                 return this.declaracaoEnquanto();
             case tiposDeSimbolos.ESCREVER:
-                return this.declaracaoEscrevaMesmaLinha();
+                return this.declaracaoEscreva();
             case tiposDeSimbolos.FIM:
                 this.lendoModulos = true;
                 this.avancarEDevolverAnterior();
