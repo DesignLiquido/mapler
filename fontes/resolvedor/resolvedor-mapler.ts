@@ -78,27 +78,27 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     }
     
     visitarDeclaracaoAleatorio(declaracao: Aleatorio): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarDeclaracaoCabecalhoPrograma(declaracao: CabecalhoPrograma): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarDeclaracaoClasse(declaracao: Classe): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarDeclaracaoComentario(declaracao: Comentario): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarDeclaracaoConst(declaracao: Const): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarDeclaracaoConstMultiplo(declaracao: ConstMultiplo): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarDeclaracaoDeExpressao(declaracao: Expressao): void | Promise<any> {
@@ -141,11 +141,11 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     }
 
     visitarDeclaracaoImportar(declaracao: Importar): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarDeclaracaoInicioAlgoritmo(declaracao: InicioAlgoritmo): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     async visitarDeclaracaoPara(declaracao: Para): Promise<any> {
@@ -174,51 +174,51 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     }
 
     visitarDeclaracaoTendoComo(declaracao: TendoComo): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarDeclaracaoTente(declaracao: Tente): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarDeclaracaoVar(declaracao: Var): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarDeclaracaoVarMultiplo(declaracao: VarMultiplo): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarExpressaoDeAtribuicao(expressao: Atribuir<string>): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoAcessoIndiceVariavel(expressao: AcessoIndiceVariavel<string>): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoAcessoElementoMatriz(expressao: AcessoElementoMatriz<string>): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoAcessoMetodo(expressao: AcessoMetodoOuPropriedade<string>): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoAgrupamento(expressao: Agrupamento): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoAtribuicaoPorIndice(expressao: AtribuicaoPorIndice): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoAtribuicaoPorIndicesMatriz(expressao: AtribuicaoPorIndicesMatriz): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoBinaria(expressao: Binario<string>): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     async visitarExpressaoBloco(declaracao: Bloco): Promise<any> {
@@ -232,27 +232,27 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     }
 
     visitarExpressaoContinua(declaracao?: Continua): ContinuarQuebra {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarExpressaoDeChamada(expressao: Chamada): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoDefinirValor(expressao: DefinirValor<string>): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoDeleguaFuncao(expressao: FuncaoConstruto): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoDeVariavel(expressao: Variavel<string> | Constante<string>): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoDicionario(expressao: Dicionario): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoExpressaoRegular(expressao: ExpressaoRegular<string>): Promise<RegExp> {
@@ -260,35 +260,35 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     }
 
     visitarExpressaoFalhar(expressao: Falhar): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoFimPara(declaracao: FimPara): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarExpressaoFormatacaoEscrita(declaracao: FormatacaoEscrita): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarExpressaoIsto(expressao: Isto): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoLeia(expressao: Leia): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoLeiaMultiplo(expressao: LeiaMultiplo): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoLiteral(expressao: Literal): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoLogica(expressao: Logico<string>): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoRetornar(declaracao: Retorna): Promise<RetornoQuebra> {
@@ -296,27 +296,27 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     }
 
     visitarExpressaoSuper(expressao: Super<string>): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoSustar(declaracao?: Sustar): SustarQuebra {
-        return Promise.resolve();
+        return Promise.resolve(declaracao);
     }
 
     visitarExpressaoTupla(expressao: Tupla): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoTipoDe(expressao: TipoDe<string>): Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoUnaria(expressao: Unario<string>): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoVetor(expressao: Vetor): void | Promise<any> {
-        return Promise.resolve();
+        return Promise.resolve(expressao);
     }
 
     protected async resolverDeclaracaoOuConstrutoForaDeBloco(declaracaoOuConstruto: Declaracao | Construto) {

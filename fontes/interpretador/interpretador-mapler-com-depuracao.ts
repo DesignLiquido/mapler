@@ -1,6 +1,5 @@
-import { AcessoIndiceVariavel, Binario, Construto, Logico, Variavel } from '@designliquido/delegua/construtos';
-import { EscrevaMesmaLinha, Escreva, Fazer, Leia } from '@designliquido/delegua/declaracoes';
-import { ContinuarQuebra, Quebra } from '@designliquido/delegua/quebras';
+import { AcessoIndiceVariavel, Binario, Construto, Variavel } from '@designliquido/delegua/construtos';
+import { EscrevaMesmaLinha, Escreva, Leia } from '@designliquido/delegua/declaracoes';
 import { InterpretadorComDepuracao } from '@designliquido/delegua/interpretador';
 
 import * as comum from './comum';
@@ -14,29 +13,6 @@ export class InterpretadorMaplerComDepuracao extends InterpretadorComDepuracao {
     constructor(diretorioBase: string, funcaoDeRetorno: Function = null, funcaoDeRetornoMesmaLinha: Function = null) {
         super(diretorioBase, funcaoDeRetorno, funcaoDeRetornoMesmaLinha);
         this.mensagemPrompt = '> ';
-    }
-
-    /**
-     * No Mapler, o bloco executa se a condição for falsa.
-     * Por isso a reimplementação aqui.
-     * @param declaracao A declaração `Fazer`
-     * @returns Só retorna em caso de erro na execução, e neste caso, o erro.
-     */
-    async visitarDeclaracaoFazer(declaracao: Fazer): Promise<any> {
-        let retornoExecucao: any;
-        do {
-            try {
-                retornoExecucao = await this.executar(declaracao.caminhoFazer);
-                if (retornoExecucao instanceof ContinuarQuebra) {
-                    retornoExecucao = null;
-                }
-            } catch (erro: any) {
-                return Promise.reject(erro);
-            }
-        } while (
-            !(retornoExecucao instanceof Quebra) &&
-            !this.eVerdadeiro(await this.avaliar(declaracao.condicaoEnquanto))
-        );
     }
 
     async visitarDeclaracaoEscreva(declaracao: Escreva): Promise<any> {
@@ -96,9 +72,5 @@ export class InterpretadorMaplerComDepuracao extends InterpretadorComDepuracao {
 
     async visitarExpressaoBinaria(expressao: Binario | any): Promise<any> {
         return comum.visitarExpressaoBinaria(this, expressao);
-    }
-
-    async visitarExpressaoLogica(expressao: Logico): Promise<any> {
-        return comum.visitarExpressaoLogica(this, expressao);
     }
 }

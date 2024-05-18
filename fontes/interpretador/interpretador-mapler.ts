@@ -39,29 +39,6 @@ export class InterpretadorMapler extends InterpretadorBase {
     }
 
     /**
-     * No Mapler, o bloco de condição executa se falso.
-     * Por isso a reimplementação aqui.
-     * @param declaracao A declaração `Fazer`
-     * @returns Só retorna em caso de erro na execução, e neste caso, o erro.
-     */
-    async visitarDeclaracaoFazer(declaracao: Fazer): Promise<any> {
-        let retornoExecucao: any;
-        do {
-            try {
-                retornoExecucao = await this.executar(declaracao.caminhoFazer);
-                if (retornoExecucao instanceof ContinuarQuebra) {
-                    retornoExecucao = null;
-                }
-            } catch (erro: any) {
-                return Promise.reject(erro);
-            }
-        } while (
-            !(retornoExecucao instanceof Quebra) &&
-            !this.eVerdadeiro(await this.avaliar(declaracao.condicaoEnquanto))
-        );
-    }
-
-    /**
      * Execução da leitura de valores da entrada configurada no
      * início da aplicação.
      * @param expressao Expressão do tipo Leia
@@ -84,9 +61,5 @@ export class InterpretadorMapler extends InterpretadorBase {
 
     async visitarExpressaoBinaria(expressao: Binario | any): Promise<any> {
         return comum.visitarExpressaoBinaria(this, expressao);
-    }
-
-    async visitarExpressaoLogica(expressao: Logico): Promise<any> {
-        return comum.visitarExpressaoLogica(this, expressao);
     }
 }

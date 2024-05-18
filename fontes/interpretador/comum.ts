@@ -1,5 +1,5 @@
 import { Escreva, EscrevaMesmaLinha } from '@designliquido/delegua';
-import { Binario, Construto, Logico } from '@designliquido/delegua/construtos';
+import { Binario, Construto } from '@designliquido/delegua/construtos';
 import { VisitanteComumInterface, SimboloInterface, VariavelInterface } from '@designliquido/delegua/interfaces';
 import { ErroEmTempoDeExecucao } from '@designliquido/delegua/excecoes';
 import { inferirTipoVariavel } from '@designliquido/delegua/interpretador/inferenciador';
@@ -87,10 +87,6 @@ export async function visitarExpressaoBinaria(
         const tipoDireito: string = direita?.hasOwnProperty('tipo') ? direita.tipo : inferirTipoVariavel(direita);
 
         switch (expressao.operador.tipo) {
-            // case tiposDeSimbolos.EXPONENCIACAO:
-            //     verificarOperandosNumeros(expressao.operador, esquerda, direita);
-            //     return Math.pow(valorEsquerdo, valorDireito);
-
             case tiposDeSimbolos.MAIOR:
                 verificarOperandosNumeros(expressao.operador, esquerda, direita);
                 return Number(valorEsquerdo) > Number(valorDireito);
@@ -121,10 +117,6 @@ export async function visitarExpressaoBinaria(
             case tiposDeSimbolos.DIVISAO:
                 verificarOperandosNumeros(expressao.operador, esquerda, direita);
                 return Number(valorEsquerdo) / Number(valorDireito);
-
-            // case tiposDeSimbolos.DIVISAO_INTEIRA:
-            //     verificarOperandosNumeros(expressao.operador, esquerda, direita);
-            //     return Math.floor(Number(valorEsquerdo) / Number(valorDireito));
 
             case tiposDeSimbolos.MULTIPLICACAO:
                 if (tipoEsquerdo === 'texto' || tipoDireito === 'texto') {
@@ -201,26 +193,4 @@ export async function visitarDeclaracaoEscreva(
     } catch (erro: any) {
         interpretador.erros.push(erro);
     }
-}
-
-export async function visitarExpressaoLogica(interpretador: VisitanteComumInterface, expressao: Logico): Promise<any> {
-    const esquerda = await avaliar(interpretador, expressao.esquerda);
-
-    // se um estado for verdadeiro, retorna verdadeiro
-    // if (expressao.operador.tipo === tiposDeSimbolos.OU) {
-    //     if (eVerdadeiro(esquerda)) return esquerda;
-    // }
-
-    // se a primeira variável é verdadeiro, retorna a segunda invertida
-    // if (expressao.operador.tipo === tiposDeSimbolos.XOU) {
-    //     const valorDireito = await avaliar(interpretador, expressao.direita);
-    //     return eVerdadeiro(esquerda) !== eVerdadeiro(valorDireito);
-    // }
-
-    // se um estado for falso, retorna falso
-    // if (expressao.operador.tipo === tiposDeSimbolos.E) {
-    //     if (!eVerdadeiro(esquerda)) return esquerda;
-    // }
-
-    return await avaliar(interpretador, expressao.direita);
 }
