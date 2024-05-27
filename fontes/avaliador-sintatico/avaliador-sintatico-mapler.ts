@@ -10,6 +10,7 @@ import {
     Expressao,
     Fazer,
     FuncaoDeclaracao,
+    InicioAlgoritmo,
     Leia,
     Para,
     Se,
@@ -153,12 +154,20 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
                         );
                         break;
                     case tiposDeSimbolos.INTEIRO:
+                        inicializacoes.push(
+                            new Var(
+                                identificador,
+                                new Literal(this.hashArquivo, Number(dadosVariaveis.simbolo.linha), 0),
+                                'inteiro'
+                            )
+                        );
+                        break;
                     case tiposDeSimbolos.REAL:
                         inicializacoes.push(
                             new Var(
                                 identificador,
                                 new Literal(this.hashArquivo, Number(dadosVariaveis.simbolo.linha), 0),
-                                'numero'
+                                'real'
                             )
                         );
                         break;
@@ -794,7 +803,8 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
 
         this.consumir(tiposDeSimbolos.VARIAVEIS, "Esperado expressão 'variaveis' para inicializar programa.");
         declaracoes = declaracoes.concat(this.validarSegmentoVariaveis());
-        this.consumir(tiposDeSimbolos.INICIO, `Esperado expressão 'inicio' para marcar o inicio do programa.`);
+        const simboloInicio = this.consumir(tiposDeSimbolos.INICIO, `Esperado expressão 'inicio' para marcar o início do programa.`);
+        declaracoes.push(new InicioAlgoritmo(simboloInicio.linha, simboloInicio.hashArquivo));
 
         while (!this.estaNoFinal()) {
             declaracoes.push(this.resolverDeclaracaoForaDeBloco());
