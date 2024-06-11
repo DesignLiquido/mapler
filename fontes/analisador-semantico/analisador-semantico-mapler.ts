@@ -113,6 +113,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
                         ? declaracao.inicializador.valor
                         : declaracao.inicializador
                     : undefined,
+            valorDefinido: true
         };
 
         return Promise.resolve();
