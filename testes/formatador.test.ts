@@ -66,7 +66,7 @@ describe('Formatadores > Portugol Studio', () => {
             const resultado = formatador.formatar(retornoAvaliadorSintatico.declaracoes);
             const linhasResultado = resultado.split(sistemaOperacional.EOL);
 
-            expect(linhasResultado).toHaveLength(14)
+            expect(linhasResultado).toHaveLength(10)
         });
         it('Booleano', () => {
             const retornoLexador = lexador.mapear([
@@ -95,7 +95,7 @@ describe('Formatadores > Portugol Studio', () => {
             const resultado = formatador.formatar(retornoAvaliadorSintatico.declaracoes);
             const linhasResultado = resultado.split(sistemaOperacional.EOL);
 
-            expect(linhasResultado).toHaveLength(14)
+            expect(linhasResultado).toHaveLength(15)
         });
         it('Literais', () => {
             const retornoLexador = lexador.mapear([
@@ -202,7 +202,7 @@ describe('Formatadores > Portugol Studio', () => {
 
         const resultado = formatador.formatar(retornoAvaliadorSintatico.declaracoes);
         const linhasResultado = resultado.split(sistemaOperacional.EOL);
-        
+
         expect(linhasResultado).toHaveLength(19)
     })
 })

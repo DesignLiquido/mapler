@@ -469,8 +469,7 @@ export class FormatadorMapler implements VisitanteComumInterface {
         if (this.devePularLinha) {
             this.codigoFormatado += this.quebraLinha;
         }
-
-        this.devePularLinha = false
+        console.log(this.devePularLinha)
     }
     visitarExpressaoVetor(expressao: Vetor): void | Promise<any> {
         throw new Error('Método não implementado.');
