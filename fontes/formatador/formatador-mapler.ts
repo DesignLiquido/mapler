@@ -139,7 +139,7 @@ export class FormatadorMapler implements VisitanteComumInterface {
             this.codigoFormatado = this.codigoFormatado.slice(0, -2);
         }
 
-        this.codigoFormatado += `${this.quebraLinha}`;
+        this.codigoFormatado += `;${this.quebraLinha}`;
     }
     visitarDeclaracaoEscrevaMesmaLinha(declaracao: EscrevaMesmaLinha): void | Promise<any> {
         throw new Error('Método não implementado.');

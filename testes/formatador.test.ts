@@ -21,7 +21,6 @@ describe('Formatadores > Portugol Studio', () => {
 
         const resultado = formatador.formatar(retornoAvaliadorSintatico.declaracoes);
         const linhasResultado = resultado.split(sistemaOperacional.EOL);
-
         expect(linhasResultado).toHaveLength(5)
     });
     it('Se - senao', () => {
