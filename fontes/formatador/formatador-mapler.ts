@@ -120,8 +120,7 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.codigoFormatado += this.quebraLinha;
 
         this.formatarDeclaracaoOuConstruto(declaracao.corpo);
-        this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}fim enquanto`;
-        this.codigoFormatado += this.quebraLinha;
+        this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}fim enquanto;${this.quebraLinha}`;
     }
     visitarDeclaracaoEscolha(declaracao: Escolha): void | Promise<any> {
         throw new Error('Método não implementado.');
@@ -149,7 +148,7 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.formatarDeclaracaoOuConstruto(declaracao.caminhoFazer);
         this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}ate `;
         this.formatarDeclaracaoOuConstruto(declaracao.condicaoEnquanto);
-        this.codigoFormatado += this.quebraLinha
+        this.codigoFormatado += `;${this.quebraLinha}`
     }
     visitarDeclaracaoImportar(declaracao: Importar): void | Promise<any> {
         throw new Error('Método não implementado.');
@@ -181,12 +180,13 @@ export class FormatadorMapler implements VisitanteComumInterface {
         if (declaracao.condicao instanceof Binario) this.codigoFormatado += ` ate ${declaracao.condicao.direita.valor}`;
         else this.formatarDeclaracaoOuConstruto(declaracao.condicao);
 
-        this.codigoFormatado += ` faca${this.quebraLinha}`;
         this.formatarDeclaracaoOuConstruto(declaracao.incrementar);
+
+        this.codigoFormatado += ` faca${this.quebraLinha}`;
 
         this.formatarBlocoOuVetorDeclaracoes(declaracao.corpo.declaracoes);
 
-        this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}fim para${this.quebraLinha}`;
+        this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}fim para;${this.quebraLinha}`;
         this.devePularLinha = true;
         this.eEstruturaPara = false;
     }
@@ -205,10 +205,10 @@ export class FormatadorMapler implements VisitanteComumInterface {
 
         this.indentacaoAtual -= this.tamanhoIndentacao;
         if (declaracao.caminhoSenao) {
-            this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)} senao ${this.quebraLinha}`;
+            this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}senao${this.quebraLinha}`;
             this.formatarDeclaracaoOuConstruto(declaracao.caminhoSenao);
         }
-        this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}fim se${this.quebraLinha}`;
+        this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}fim se;${this.quebraLinha}`;
     }
     visitarDeclaracaoTendoComo(declaracao: TendoComo): void | Promise<any> {
         throw new Error('Método não implementado.');
@@ -227,7 +227,8 @@ export class FormatadorMapler implements VisitanteComumInterface {
             case 'lógico':
                 this.codigoFormatado += tiposDeDadosMapler.LOGICO
                 break;
-            case 'vetor':
+            case tiposDeDadosMapler.VETOR:
+                this.codigoFormatado += `${tiposDeDadosMapler.VETOR} `
                 if (Array.isArray(declaracao.inicializador.valor)) {
                     const tamanhoVetor = declaracao.inicializador.valor.length
                     this.codigoFormatado += `[${declaracao.inicializador.valor[0]}..${declaracao.inicializador.valor[tamanhoVetor - 1]}]`
@@ -254,7 +255,9 @@ export class FormatadorMapler implements VisitanteComumInterface {
         } else {
             this.codigoFormatado += `${expressao.simbolo.lexema} <- `;
         }
+
         this.formatarDeclaracaoOuConstruto(expressao.valor);
+
         if (this.devePularLinha) {
             this.codigoFormatado += `;${this.quebraLinha}`;
         }
@@ -307,7 +310,7 @@ export class FormatadorMapler implements VisitanteComumInterface {
             valor = expressao.valor.valor
         }
 
-        this.codigoFormatado += `${" ".repeat(this.indentacaoAtual)}${variavel.simbolo.lexema}[${posicao}] <- ${valor}${this.quebraLinha}`
+        this.codigoFormatado += `${" ".repeat(this.indentacaoAtual)}${variavel.simbolo.lexema}[${posicao}] <- ${valor};${this.quebraLinha}`
     }
     visitarExpressaoAtribuicaoPorIndicesMatriz(expressao: AtribuicaoPorIndicesMatriz): Promise<any> {
         throw new Error('Método não implementado.');
@@ -378,8 +381,12 @@ export class FormatadorMapler implements VisitanteComumInterface {
     visitarExpressaoFalhar(expressao: Falhar): Promise<any> {
         throw new Error('Método não implementado.');
     }
-    visitarExpressaoFimPara(declaracao: FimPara): void | Promise<any> {
-        throw new Error('Método não implementado.');
+    visitarExpressaoFimPara(declaracao: FimPara): any {
+        if (declaracao.incremento) {
+            this.codigoFormatado += ` passo `
+            const incremento = declaracao.incremento as Expressao
+            this.formatarDeclaracaoOuConstruto(incremento.expressao.valor.direita)
+        }
     }
     visitarExpressaoFormatacaoEscrita(declaracao: FormatacaoEscrita): void | Promise<any> {
         this.formatarDeclaracaoOuConstruto(declaracao.expressao)
@@ -465,11 +472,6 @@ export class FormatadorMapler implements VisitanteComumInterface {
                 this.codigoFormatado += operador;
                 break;
         }
-
-        if (this.devePularLinha) {
-            this.codigoFormatado += this.quebraLinha;
-        }
-        console.log(this.devePularLinha)
     }
     visitarExpressaoVetor(expressao: Vetor): void | Promise<any> {
         throw new Error('Método não implementado.');
@@ -533,6 +535,9 @@ export class FormatadorMapler implements VisitanteComumInterface {
                 break;
             case 'AcessoIndiceVariavel':
                 this.visitarExpressaoAcessoIndiceVariavel(declaracaoOuConstruto as AcessoIndiceVariavel)
+                break;
+            case 'FimPara':
+                this.visitarExpressaoFimPara(declaracaoOuConstruto as FimPara)
                 break;
             default:
                 console.log(declaracaoOuConstruto.constructor.name)
