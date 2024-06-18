@@ -1,5 +1,5 @@
 import { AcessoIndiceVariavel, Binario, Construto, Variavel } from '@designliquido/delegua/construtos';
-import { EscrevaMesmaLinha, Escreva, Leia } from '@designliquido/delegua/declaracoes';
+import { EscrevaMesmaLinha, Escreva, Leia, InicioAlgoritmo } from '@designliquido/delegua/declaracoes';
 import { InterpretadorComDepuracao } from '@designliquido/delegua/interpretador';
 
 import * as comum from './comum';
@@ -13,6 +13,10 @@ export class InterpretadorMaplerComDepuracao extends InterpretadorComDepuracao {
     constructor(diretorioBase: string, funcaoDeRetorno: Function = null, funcaoDeRetornoMesmaLinha: Function = null) {
         super(diretorioBase, funcaoDeRetorno, funcaoDeRetornoMesmaLinha);
         this.mensagemPrompt = '> ';
+    }
+
+    override visitarDeclaracaoInicioAlgoritmo(declaracao: InicioAlgoritmo): Promise<any> {
+        return Promise.resolve();
     }
 
     async visitarDeclaracaoEscreva(declaracao: Escreva): Promise<any> {

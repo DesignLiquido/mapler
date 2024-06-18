@@ -29,7 +29,7 @@ describe('Avaliador sintático (Mapler)', () => {
                 const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
     
                 expect(retornoAvaliadorSintatico).toBeTruthy();
-                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(4);
+                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(5);
             });
 
             it('Olá Mundo', () => {
@@ -42,7 +42,7 @@ describe('Avaliador sintático (Mapler)', () => {
                 const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
     
                 expect(retornoAvaliadorSintatico).toBeTruthy();
-                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(1);
+                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(2);
             });
 
             it('Código com comentários', () => {
@@ -62,7 +62,7 @@ describe('Avaliador sintático (Mapler)', () => {
                 const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
     
                 expect(retornoAvaliadorSintatico).toBeTruthy();
-                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(9);
+                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(10);
             });
 
             it('Módulos', () => {
@@ -136,7 +136,7 @@ describe('Avaliador sintático (Mapler)', () => {
                 const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
     
                 expect(retornoAvaliadorSintatico).toBeTruthy();
-                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(11);
+                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(12);
             });
 
             it('Para', () => {
@@ -152,7 +152,7 @@ describe('Avaliador sintático (Mapler)', () => {
                 const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
     
                 expect(retornoAvaliadorSintatico).toBeTruthy();
-                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(2);
+                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(3);
             });
     
             it('Repita', () => {
@@ -172,7 +172,7 @@ describe('Avaliador sintático (Mapler)', () => {
                 const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
     
                 expect(retornoAvaliadorSintatico).toBeTruthy();
-                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(5);
+                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(6);
             });
 
             it('Se', () => {
@@ -196,7 +196,7 @@ describe('Avaliador sintático (Mapler)', () => {
                 const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
     
                 expect(retornoAvaliadorSintatico).toBeTruthy();
-                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(3);
+                expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(4);
             });
         });
     });

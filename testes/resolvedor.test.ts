@@ -90,7 +90,7 @@ describe('Resolvedor (Mapler)', () => {
                 const retornoResolvedor = await resolvedorMapler.resolver(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoResolvedor).toBeTruthy();
-                expect(retornoResolvedor).toHaveLength(11);
+                expect(retornoResolvedor).toHaveLength(12);
                 expect(espiaoVisitarDeclaracaoFutura).toHaveBeenCalledTimes(4);
             });
         })

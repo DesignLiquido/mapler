@@ -1,7 +1,6 @@
-import { Binario, Construto, ExpressaoRegular, Logico, Variavel } from '@designliquido/delegua/construtos';
-import { Aleatorio, Const, Escreva, EscrevaMesmaLinha, Fazer, Leia } from '@designliquido/delegua/declaracoes';
+import { Binario, ExpressaoRegular, Variavel } from '@designliquido/delegua/construtos';
+import { Aleatorio, Const, Escreva, EscrevaMesmaLinha, InicioAlgoritmo, Leia } from '@designliquido/delegua/declaracoes';
 import { InterpretadorBase } from '@designliquido/delegua/interpretador';
-import { ContinuarQuebra, Quebra } from '@designliquido/delegua/quebras';
 
 import * as comum from './comum';
 
@@ -16,6 +15,10 @@ export class InterpretadorMapler extends InterpretadorBase {
     ) {
         super(diretorioBase, performance, funcaoDeRetorno, funcaoDeRetornoMesmaLinha);
         this.mensagemPrompt = '> ';
+    }
+    
+    override visitarDeclaracaoInicioAlgoritmo(declaracao: InicioAlgoritmo): Promise<any> {
+        return Promise.resolve();
     }
 
     visitarExpressaoExpressaoRegular(expressao: ExpressaoRegular): Promise<any> {
