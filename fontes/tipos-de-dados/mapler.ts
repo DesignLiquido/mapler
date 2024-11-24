@@ -1,5 +1,5 @@
 export default {
     CADEIA: 'cadeia',
     LOGICO: 'logico',
-    VETOR: 'vetor'
-}
+    VETOR: 'vetor',
+};

@@ -351,7 +351,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
             declaracoes.push(this.resolverDeclaracaoForaDeBloco());
         }
 
-        return declaracoes.filter(d => d);
+        return declaracoes.filter((d) => d);
     }
 
     chamar(): Construto {
@@ -389,20 +389,21 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         const corpo = this.blocoEscopo();
 
         this.consumir(tiposDeSimbolos.FIM, `Isso nunca dá erro.`);
-        this.consumir(tipo, `Esperado palavra reservada "${tipo.toLowerCase()}" após palavra reservada "fim" para finalização da declaração.`);
-        this.consumir(tiposDeSimbolos.PONTO_VIRGULA, `Esperado ponto-e-vírgula após palavras reservadas "fim ${tipo.toLowerCase()}."`);
+        this.consumir(
+            tipo,
+            `Esperado palavra reservada "${tipo.toLowerCase()}" após palavra reservada "fim" para finalização da declaração.`
+        );
+        this.consumir(
+            tiposDeSimbolos.PONTO_VIRGULA,
+            `Esperado ponto-e-vírgula após palavras reservadas "fim ${tipo.toLowerCase()}."`
+        );
 
         return new FuncaoConstruto(this.hashArquivo, Number(simboloAnterior.linha), [], corpo);
     }
 
     declaracaoComentario(): Comentario {
         const simboloComentario = this.avancarEDevolverAnterior();
-        return new Comentario(
-            simboloComentario.hashArquivo, 
-            simboloComentario.linha, 
-            simboloComentario.literal, 
-            false
-        );
+        return new Comentario(simboloComentario.hashArquivo, simboloComentario.linha, simboloComentario.literal, false);
     }
 
     declaracaoEnquanto(): Enquanto {
@@ -560,24 +561,31 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
      */
     protected declaracaoModulo(): FuncaoDeclaracao {
         const simboloModulo = this.avancarEDevolverAnterior();
-        const simboloNomeModulo = this.consumir(tiposDeSimbolos.IDENTIFICADOR, `Esperado nome do módulo após palavra reservada "modulo".`);
-
-        return new FuncaoDeclaracao(
-            simboloNomeModulo,
-            this.corpoDaFuncao(simboloModulo.tipo),
-            null,
-            []
+        const simboloNomeModulo = this.consumir(
+            tiposDeSimbolos.IDENTIFICADOR,
+            `Esperado nome do módulo após palavra reservada "modulo".`
         );
+
+        return new FuncaoDeclaracao(simboloNomeModulo, this.corpoDaFuncao(simboloModulo.tipo), null, []);
     }
 
     declaracaoPara(): Para {
         const simboloPara: SimboloInterface = this.avancarEDevolverAnterior();
-        const simboloVariavelIteracao: SimboloInterface = this.consumir(tiposDeSimbolos.IDENTIFICADOR, `Esperado identificador após palavra reservada "para".`);
+        const simboloVariavelIteracao: SimboloInterface = this.consumir(
+            tiposDeSimbolos.IDENTIFICADOR,
+            `Esperado identificador após palavra reservada "para".`
+        );
         this.consumir(tiposDeSimbolos.DE, `Esperado paravra reservada "de" após identificador em declaração "para".`);
         const literalOuVariavelInicio = this.expressao();
-        this.consumir(tiposDeSimbolos.ATE, `Esperado paravra reservada "ate" após literal ou identificador de estado inicial em declaração "para".`);
+        this.consumir(
+            tiposDeSimbolos.ATE,
+            `Esperado paravra reservada "ate" após literal ou identificador de estado inicial em declaração "para".`
+        );
         const literalOuVariavelFim = this.expressao();
-        this.consumir(tiposDeSimbolos.PASSO, `Esperado paravra reservada "passo" após literal ou identificador de estado final em declaração "para".`);
+        this.consumir(
+            tiposDeSimbolos.PASSO,
+            `Esperado paravra reservada "passo" após literal ou identificador de estado final em declaração "para".`
+        );
 
         let operadorCondicao = new Simbolo(
             tiposDeSimbolos.MENOR_IGUAL,
@@ -624,7 +632,10 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
             resolverIncrementoEmExecucao = true;
         }
 
-        this.consumir(tiposDeSimbolos.FACA, `Esperado palavra reservada "faca" após literal ou identificador de estado inicial em declaração "para".`);
+        this.consumir(
+            tiposDeSimbolos.FACA,
+            `Esperado palavra reservada "faca" após literal ou identificador de estado inicial em declaração "para".`
+        );
 
         const declaracoesBlocoPara = [];
         let simboloAtualBlocoPara: SimboloInterface = this.simbolos[this.atual];
@@ -634,18 +645,24 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         }
 
         this.consumir(tiposDeSimbolos.FIM, '');
-        this.consumir(tiposDeSimbolos.PARA, "Esperado palavra reservada 'para' após palavra reservada 'fim' para encerrar declaração 'para'.");
-        this.consumir(tiposDeSimbolos.PONTO_VIRGULA, "Esperado ponto-e-vírgula após palavra reservada 'para' para encerrar declaração 'para'.");
+        this.consumir(
+            tiposDeSimbolos.PARA,
+            "Esperado palavra reservada 'para' após palavra reservada 'fim' para encerrar declaração 'para'."
+        );
+        this.consumir(
+            tiposDeSimbolos.PONTO_VIRGULA,
+            "Esperado ponto-e-vírgula após palavra reservada 'para' para encerrar declaração 'para'."
+        );
 
         const corpo = new Bloco(
             this.hashArquivo,
             Number(simboloPara.linha) + 1,
             declaracoesBlocoPara.filter((d) => d)
         );
-        
+
         const declaracaoPara = new Para(
-            this.hashArquivo, 
-            Number(simboloPara.linha), 
+            this.hashArquivo,
+            Number(simboloPara.linha),
             // Inicialização.
             new Atribuir(this.hashArquivo, simboloVariavelIteracao, literalOuVariavelInicio),
             // Condição.
@@ -803,7 +820,10 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
 
         this.consumir(tiposDeSimbolos.VARIAVEIS, "Esperado expressão 'variaveis' para inicializar programa.");
         declaracoes = declaracoes.concat(this.validarSegmentoVariaveis());
-        const simboloInicio = this.consumir(tiposDeSimbolos.INICIO, `Esperado expressão 'inicio' para marcar o início do programa.`);
+        const simboloInicio = this.consumir(
+            tiposDeSimbolos.INICIO,
+            `Esperado expressão 'inicio' para marcar o início do programa.`
+        );
         declaracoes.push(new InicioAlgoritmo(simboloInicio.linha, simboloInicio.hashArquivo));
 
         while (!this.estaNoFinal()) {
@@ -811,7 +831,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         }
 
         return {
-            declaracoes: declaracoes.filter(d => d),
+            declaracoes: declaracoes.filter((d) => d),
             erros: this.erros,
         } as RetornoAvaliadorSintatico<Declaracao>;
     }

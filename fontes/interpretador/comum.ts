@@ -52,7 +52,8 @@ function verificarOperandosNumeros(
     const tipoDireita: string = direita.tipo ? direita.tipo : typeof direita === 'number' ? 'número' : String(NaN);
     const tipoEsquerda: string = esquerda.tipo ? esquerda.tipo : typeof esquerda === 'number' ? 'número' : String(NaN);
     const tiposNumericos = ['inteiro', 'numero', 'número', 'real'];
-    if (tiposNumericos.includes(tipoDireita.toLowerCase()) && tiposNumericos.includes(tipoEsquerda.toLowerCase())) return;
+    if (tiposNumericos.includes(tipoDireita.toLowerCase()) && tiposNumericos.includes(tipoEsquerda.toLowerCase()))
+        return;
     throw new ErroEmTempoDeExecucao(operador, 'Operadores precisam ser números.', operador.linha);
 }
 
@@ -182,10 +183,7 @@ export async function visitarDeclaracaoEscrevaMesmaLinha(
  * @param declaracao A declaração.
  * @returns Sempre nulo, por convenção de visita.
  */
-export async function visitarDeclaracaoEscreva(
-    interpretador: InterpretadorMapler,
-    declaracao: Escreva
-): Promise<any> {
+export async function visitarDeclaracaoEscreva(interpretador: InterpretadorMapler, declaracao: Escreva): Promise<any> {
     try {
         const formatoTexto: string = await avaliarArgumentosEscrevaMapler(interpretador, declaracao.argumentos);
         interpretador.funcaoDeRetorno(formatoTexto);

@@ -1,14 +1,5 @@
-import {
-    Atribuir,
-    Literal,
-    Vetor,
-} from '@designliquido/delegua/construtos';
-import {
-    Declaracao,
-    Expressao,
-    Retorna,
-    Var,
-} from '@designliquido/delegua/declaracoes';
+import { Atribuir, Literal, Vetor } from '@designliquido/delegua/construtos';
+import { Declaracao, Expressao, Retorna, Var } from '@designliquido/delegua/declaracoes';
 import { SimboloInterface } from '@designliquido/delegua/interfaces';
 import { DiagnosticoAnalisadorSemantico, DiagnosticoSeveridade } from '@designliquido/delegua/interfaces/erros';
 import { FuncaoHipoteticaInterface } from '@designliquido/delegua/interfaces/funcao-hipotetica-interface';
@@ -113,7 +104,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
                         ? declaracao.inicializador.valor
                         : declaracao.inicializador
                     : undefined,
-            valorDefinido: true
+            valorDefinido: true,
         };
 
         return Promise.resolve();

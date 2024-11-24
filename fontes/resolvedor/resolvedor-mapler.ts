@@ -61,22 +61,22 @@ import { ContinuarQuebra, RetornoQuebra, SustarQuebra } from '@designliquido/del
 import { DeclaracaoFutura } from '../declaracoes/declaracao-futura';
 
 /**
- * Um resolvedor executa após a avaliação sintática, para: 
+ * Um resolvedor executa após a avaliação sintática, para:
  * - Resolver referências marcadas como futuras;
  * - Trazer declarações de módulos antes do bloco de execução, antes da interpretação.
- * 
- * Em Mapler, isso acontece porque módulos (funções) são declarados após o bloco principal de execução. 
- * Em Delégua, as declarações precisam vir antes da execução propriamente dita. 
- * No entanto, não é papel do avaliador sintático colocar isso em ordem, até porque a avaliação sintática 
- * serve a diferentes propósitos, como a formatação de código, por exemplo. 
+ *
+ * Em Mapler, isso acontece porque módulos (funções) são declarados após o bloco principal de execução.
+ * Em Delégua, as declarações precisam vir antes da execução propriamente dita.
+ * No entanto, não é papel do avaliador sintático colocar isso em ordem, até porque a avaliação sintática
+ * serve a diferentes propósitos, como a formatação de código, por exemplo.
  */
 export class ResolvedorMapler implements VisitanteComumInterface {
-    declaracoesModulos: { [nome: string]: FuncaoDeclaracao }
+    declaracoesModulos: { [nome: string]: FuncaoDeclaracao };
 
     constructor() {
         this.declaracoesModulos = {};
     }
-    
+
     visitarDeclaracaoAleatorio(declaracao: Aleatorio): Promise<any> {
         return Promise.resolve(declaracao);
     }
@@ -105,9 +105,7 @@ export class ResolvedorMapler implements VisitanteComumInterface {
         return Promise.resolve(declaracao);
     }
 
-    visitarDeclaracaoDefinicaoFuncao(declaracao: FuncaoDeclaracao): void {
-        
-    }
+    visitarDeclaracaoDefinicaoFuncao(declaracao: FuncaoDeclaracao): void {}
 
     visitarDeclaracaoEnquanto(declaracao: Enquanto): void | Promise<any> {
         return Promise.resolve(declaracao);
@@ -134,9 +132,7 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     async visitarDeclaracaoFutura(declaracao: DeclaracaoFutura): Promise<any> {
         const declaracaoModuloCorrespondente = this.declaracoesModulos[declaracao.identificadorFuturo];
         return Promise.resolve(
-            new Expressao(
-                new Chamada(declaracao.hashArquivo, declaracaoModuloCorrespondente.funcao, null, [])
-            )
+            new Expressao(new Chamada(declaracao.hashArquivo, declaracaoModuloCorrespondente.funcao, null, []))
         );
     }
 
@@ -150,11 +146,13 @@ export class ResolvedorMapler implements VisitanteComumInterface {
 
     async visitarDeclaracaoPara(declaracao: Para): Promise<any> {
         if (declaracao.inicializador) {
-            declaracao.inicializador = await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao.inicializador as Declaracao);
+            declaracao.inicializador = await this.resolverDeclaracaoOuConstrutoForaDeBloco(
+                declaracao.inicializador as Declaracao
+            );
         }
-        
+
         declaracao.condicao = await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao.condicao);
-        
+
         return declaracao;
     }
 
@@ -169,7 +167,7 @@ export class ResolvedorMapler implements VisitanteComumInterface {
         if (declaracao.caminhoSenao) {
             declaracao.caminhoSenao = await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao.caminhoSenao);
         }
-        
+
         return declaracao;
     }
 
@@ -352,18 +350,16 @@ export class ResolvedorMapler implements VisitanteComumInterface {
      */
     async resolver(declaracoes: Declaracao[]): Promise<Declaracao[]> {
         const declaracoesResolvidas = [];
-        for (let declaracaoModulo of declaracoes.filter(declaracao => declaracao instanceof FuncaoDeclaracao)) {
+        for (let declaracaoModulo of declaracoes.filter((declaracao) => declaracao instanceof FuncaoDeclaracao)) {
             const declaracaoModuloTipada = declaracaoModulo as FuncaoDeclaracao;
             this.declaracoesModulos[declaracaoModuloTipada.simbolo.lexema] = declaracaoModuloTipada;
             declaracoesResolvidas.push(declaracaoModuloTipada);
         }
 
         for (let declaracao of declaracoes) {
-            declaracoesResolvidas.push(
-                await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao)
-            );
+            declaracoesResolvidas.push(await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao));
         }
 
-        return declaracoesResolvidas.filter(d => d);
+        return declaracoesResolvidas.filter((d) => d);
     }
 }

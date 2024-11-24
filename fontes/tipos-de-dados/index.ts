@@ -1,2 +1,2 @@
-export * from './comum'
-export * from './mapler'
+export * from './comum';
+export * from './mapler';
