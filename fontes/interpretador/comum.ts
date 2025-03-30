@@ -2,7 +2,7 @@ import { Escreva, EscrevaMesmaLinha } from '@designliquido/delegua';
 import { Binario, Construto } from '@designliquido/delegua/construtos';
 import { VisitanteComumInterface, SimboloInterface, VariavelInterface } from '@designliquido/delegua/interfaces';
 import { ErroEmTempoDeExecucao } from '@designliquido/delegua/excecoes';
-import { inferirTipoVariavel } from '@designliquido/delegua/interpretador/inferenciador';
+import { inferirTipoVariavel } from '@designliquido/delegua/inferenciador';
 
 import { InterpretadorMapler } from './interpretador-mapler';
 
