@@ -43,7 +43,6 @@ import {
     FormatacaoEscrita,
     Isto,
     Leia,
-    LeiaMultiplo,
     Literal,
     Logico,
     Retorna,
@@ -55,6 +54,8 @@ import {
     Vetor,
     Declaracao,
     Construto,
+    AcessoMetodo,
+    AcessoPropriedade,
 } from '@designliquido/delegua';
 import { VisitanteComumInterface } from '@designliquido/delegua/interfaces';
 import { ContinuarQuebra, RetornoQuebra, SustarQuebra } from '@designliquido/delegua/quebras';
@@ -75,6 +76,14 @@ export class ResolvedorMapler implements VisitanteComumInterface {
 
     constructor() {
         this.declaracoesModulos = {};
+    }
+
+    visitarExpressaoAcessoMetodo(expressao: AcessoMetodo): Promise<any> | void {
+        return Promise.resolve(expressao);
+    }
+
+    visitarExpressaoAcessoPropriedade(expressao: AcessoPropriedade): Promise<any> | void {
+        return Promise.resolve(expressao);
     }
 
     visitarDeclaracaoAleatorio(declaracao: Aleatorio): Promise<any> {
@@ -132,7 +141,7 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     async visitarDeclaracaoFutura(declaracao: DeclaracaoFutura): Promise<any> {
         const declaracaoModuloCorrespondente = this.declaracoesModulos[declaracao.identificadorFuturo];
         return Promise.resolve(
-            new Expressao(new Chamada(declaracao.hashArquivo, declaracaoModuloCorrespondente.funcao, null, []))
+            new Expressao(new Chamada(declaracao.hashArquivo, declaracaoModuloCorrespondente.funcao, []))
         );
     }
 
@@ -199,7 +208,7 @@ export class ResolvedorMapler implements VisitanteComumInterface {
         return Promise.resolve(expressao);
     }
 
-    visitarExpressaoAcessoMetodo(expressao: AcessoMetodoOuPropriedade<string>): void | Promise<any> {
+    visitarExpressaoAcessoMetodoOuPropriedade(expressao: AcessoMetodoOuPropriedade<string>): void | Promise<any> {
         return Promise.resolve(expressao);
     }
 
@@ -277,10 +286,6 @@ export class ResolvedorMapler implements VisitanteComumInterface {
         return Promise.resolve(expressao);
     }
 
-    visitarExpressaoLeiaMultiplo(expressao: LeiaMultiplo): Promise<any> {
-        return Promise.resolve(expressao);
-    }
-
     visitarExpressaoLiteral(expressao: Literal): Promise<any> {
         return Promise.resolve(expressao);
     }
@@ -290,7 +295,7 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     }
 
     visitarExpressaoRetornar(declaracao: Retorna): Promise<RetornoQuebra> {
-        return Promise.resolve(declaracao);
+        return Promise.resolve(declaracao as any);
     }
 
     visitarExpressaoSuper(expressao: Super<string>): void | Promise<any> {

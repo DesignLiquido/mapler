@@ -321,9 +321,10 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
             const valor = this.atribuir();
 
             if (expressao instanceof Variavel) {
-                const simbolo = expressao.simbolo;
-                return new Atribuir(this.hashArquivo, simbolo, valor);
-            } else if (expressao instanceof AcessoIndiceVariavel) {
+                return new Atribuir(this.hashArquivo, expressao, valor);
+            } 
+            
+            if (expressao instanceof AcessoIndiceVariavel) {
                 return new AtribuicaoPorIndice(
                     this.hashArquivo,
                     expressao.linha,
@@ -571,6 +572,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
 
     declaracaoPara(): Para {
         const simboloPara: SimboloInterface = this.avancarEDevolverAnterior();
+
         const simboloVariavelIteracao: SimboloInterface = this.consumir(
             tiposDeSimbolos.IDENTIFICADOR,
             `Esperado identificador após palavra reservada "para".`
@@ -589,15 +591,15 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
 
         let operadorCondicao = new Simbolo(
             tiposDeSimbolos.MENOR_IGUAL,
-            '',
-            '',
+            '<=',
+            null,
             Number(simboloPara.linha),
             this.hashArquivo
         );
         let operadorCondicaoIncremento = new Simbolo(
             tiposDeSimbolos.MENOR,
-            '',
-            '',
+            '<',
+            null,
             Number(simboloPara.linha),
             this.hashArquivo
         );
@@ -611,15 +613,15 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
             if (passo.hasOwnProperty('operador') && (passo as Unario).operador.tipo === tiposDeSimbolos.SUBTRACAO) {
                 operadorCondicao = new Simbolo(
                     tiposDeSimbolos.MAIOR_IGUAL,
-                    '',
-                    '',
+                    '>=',
+                    null,
                     Number(simboloPara.linha),
                     this.hashArquivo
                 );
                 operadorCondicaoIncremento = new Simbolo(
                     tiposDeSimbolos.MAIOR,
-                    '',
-                    '',
+                    '>',
+                    null,
                     Number(simboloPara.linha),
                     this.hashArquivo
                 );
@@ -664,7 +666,11 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
             this.hashArquivo,
             Number(simboloPara.linha),
             // Inicialização.
-            new Atribuir(this.hashArquivo, simboloVariavelIteracao, literalOuVariavelInicio),
+            new Atribuir(
+                this.hashArquivo, 
+                new Variavel(this.hashArquivo, simboloVariavelIteracao, 'inteiro'), 
+                literalOuVariavelInicio
+            ),
             // Condição.
             new Binario(
                 this.hashArquivo,
@@ -685,7 +691,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
                 new Expressao(
                     new Atribuir(
                         this.hashArquivo,
-                        simboloVariavelIteracao,
+                        new Variavel(this.hashArquivo, simboloVariavelIteracao, 'inteiro'),
                         new Binario(
                             this.hashArquivo,
                             new Variavel(this.hashArquivo, simboloVariavelIteracao),

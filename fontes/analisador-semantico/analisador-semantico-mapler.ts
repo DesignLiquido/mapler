@@ -1,4 +1,4 @@
-import { Atribuir, Literal, Vetor } from '@designliquido/delegua/construtos';
+import { Atribuir, Literal, Variavel, Vetor } from '@designliquido/delegua/construtos';
 import { Declaracao, Expressao, Retorna, Var } from '@designliquido/delegua/declaracoes';
 import { SimboloInterface } from '@designliquido/delegua/interfaces';
 import { DiagnosticoAnalisadorSemantico, DiagnosticoSeveridade } from '@designliquido/delegua/interfaces/erros';
@@ -8,6 +8,7 @@ import { VariavelHipoteticaInterface } from '@designliquido/delegua/interfaces/v
 import { RetornoQuebra } from '@designliquido/delegua/quebras';
 import { AnalisadorSemanticoBase } from '@designliquido/delegua/analisador-semantico/analisador-semantico-base';
 import { PilhaVariaveis } from '@designliquido/delegua/analisador-semantico/pilha-variaveis';
+import { TipoDadosElementar } from '@designliquido/delegua/tipo-dados-elementar';
 
 export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
     pilhaVariaveis: PilhaVariaveis;
@@ -46,23 +47,35 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
     }
 
     visitarExpressaoDeAtribuicao(expressao: Atribuir) {
-        let valor = this.variaveis[expressao.simbolo.lexema];
+        // TODO: Readaptar para trabalhar com `expressao.alvo` sendo um construto.
+        let simboloAlvo: SimboloInterface;
+        switch (expressao.alvo.constructor.name) {
+            case 'Variavel':
+                const alvoVariavel = expressao.alvo as Variavel;
+                simboloAlvo = alvoVariavel.simbolo;
+                break;
+            default:
+                // throw new Error(`Implementar atribuição para ${expressao.alvo.constructor.name}.`);
+                return Promise.resolve();
+        }
+        
+        let valor = this.variaveis[simboloAlvo.lexema];
         if (!valor) {
             this.erro(
-                expressao.simbolo,
-                `Variável ${expressao.simbolo.lexema} ainda não foi declarada até este ponto.`
+                simboloAlvo,
+                `Variável ${simboloAlvo.lexema} ainda não foi declarada até este ponto.`
             );
             return Promise.resolve();
         }
 
         if (valor.tipo) {
             if (expressao.valor instanceof Literal && valor.tipo.includes('[]')) {
-                this.erro(expressao.simbolo, `Atribuição inválida, esperado tipo '${valor.tipo}' na atribuição.`);
+                this.erro(simboloAlvo, `Atribuição inválida, esperado tipo '${valor.tipo}' na atribuição.`);
                 return Promise.resolve();
             }
 
             if (expressao.valor instanceof Vetor && !valor.tipo.includes('[]')) {
-                this.erro(expressao.simbolo, `Atribuição inválida, esperado tipo '${valor.tipo}' na atribuição.`);
+                this.erro(simboloAlvo, `Atribuição inválida, esperado tipo '${valor.tipo}' na atribuição.`);
                 return Promise.resolve();
             }
 
@@ -71,13 +84,13 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
                 if (!['qualquer'].includes(valor.tipo)) {
                     if (valorLiteral === 'string') {
                         if (valor.tipo != 'texto') {
-                            this.erro(expressao.simbolo, `Esperado tipo '${valor.tipo}' na atribuição.`);
+                            this.erro(simboloAlvo, `Esperado tipo '${valor.tipo}' na atribuição.`);
                             return Promise.resolve();
                         }
                     }
                     if (valorLiteral === 'number') {
                         if (!['inteiro', 'real'].includes(valor.tipo)) {
-                            this.erro(expressao.simbolo, `Esperado tipo '${valor.tipo}' na atribuição.`);
+                            this.erro(simboloAlvo, `Esperado tipo '${valor.tipo}' na atribuição.`);
                             return Promise.resolve();
                         }
                     }
@@ -85,8 +98,8 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
             }
         }
 
-        if (this.variaveis[expressao.simbolo.lexema]) {
-            this.variaveis[expressao.simbolo.lexema].valor = expressao.valor;
+        if (this.variaveis[simboloAlvo.lexema]) {
+            this.variaveis[simboloAlvo.lexema].valor = expressao.valor;
         }
     }
 
@@ -97,7 +110,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
     visitarDeclaracaoVar(declaracao: Var): Promise<any> {
         this.variaveis[declaracao.simbolo.lexema] = {
             imutavel: false,
-            tipo: declaracao.tipo,
+            tipo: declaracao.tipo as TipoDadosElementar,
             valor:
                 declaracao.inicializador !== null
                     ? declaracao.inicializador.valor !== undefined

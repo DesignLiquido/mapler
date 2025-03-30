@@ -35,7 +35,6 @@ import {
     DefinirValor,
     FuncaoConstruto,
     Variavel,
-    Constante,
     Dicionario,
     ExpressaoRegular,
     Falhar,
@@ -43,7 +42,6 @@ import {
     FormatacaoEscrita,
     Isto,
     Leia,
-    LeiaMultiplo,
     Literal,
     Logico,
     Retorna,
@@ -55,6 +53,8 @@ import {
     Vetor,
     Declaracao,
     Construto,
+    AcessoMetodo,
+    AcessoPropriedade,
 } from '@designliquido/delegua';
 import { VisitanteComumInterface } from '@designliquido/delegua/interfaces';
 import { ContinuarQuebra, RetornoQuebra, SustarQuebra } from '@designliquido/delegua/quebras';
@@ -82,6 +82,14 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.devePularLinha = true;
         this.deveIndentar = true;
         this.eEstruturaPara = false;
+    }
+
+    visitarExpressaoAcessoMetodo(expressao: AcessoMetodo): Promise<any> | void {
+        throw new Error('Método não implementado.');
+    }
+
+    visitarExpressaoAcessoPropriedade(expressao: AcessoPropriedade): Promise<any> | void {
+        throw new Error('Método não implementado.');
     }
 
     visitarDeclaracaoAleatorio(declaracao: Aleatorio): Promise<any> {
@@ -249,10 +257,13 @@ export class FormatadorMapler implements VisitanteComumInterface {
         if (this.deveIndentar) {
             this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}`;
         }
+
+        this.formatarDeclaracaoOuConstruto(expressao.alvo);
+
         if (this.eEstruturaPara) {
-            this.codigoFormatado += `${expressao.simbolo.lexema} de `;
+            this.codigoFormatado += ` de `;
         } else {
-            this.codigoFormatado += `${expressao.simbolo.lexema} <- `;
+            this.codigoFormatado += ` <- `;
         }
 
         this.formatarDeclaracaoOuConstruto(expressao.valor);
@@ -281,12 +292,15 @@ export class FormatadorMapler implements VisitanteComumInterface {
         }
         this.codigoFormatado += `${variavel}[${valor}]`;
     }
+
     visitarExpressaoAcessoElementoMatriz(expressao: AcessoElementoMatriz<string>): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
-    visitarExpressaoAcessoMetodo(expressao: AcessoMetodoOuPropriedade<string>): void | Promise<any> {
+
+    visitarExpressaoAcessoMetodoOuPropriedade(expressao: AcessoMetodoOuPropriedade<string>): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarExpressaoAgrupamento(expressao: Agrupamento): any {
         this.codigoFormatado += '(';
         this.formatarDeclaracaoOuConstruto(expressao.expressao);
@@ -404,9 +418,6 @@ export class FormatadorMapler implements VisitanteComumInterface {
         }
 
         this.codigoFormatado += `${this.quebraLinha}`;
-    }
-    visitarExpressaoLeiaMultiplo(expressao: LeiaMultiplo): Promise<any> {
-        throw new Error('Método não implementado.');
     }
 
     visitarExpressaoLiteral(expressao: Literal): any {
