@@ -56,6 +56,8 @@ import {
     Construto,
     AcessoMetodo,
     AcessoPropriedade,
+    ArgumentoReferenciaFuncao,
+    ReferenciaFuncao,
 } from '@designliquido/delegua';
 import { VisitanteComumInterface } from '@designliquido/delegua/interfaces';
 import { ContinuarQuebra, RetornoQuebra, SustarQuebra } from '@designliquido/delegua/quebras';
@@ -76,6 +78,14 @@ export class ResolvedorMapler implements VisitanteComumInterface {
 
     constructor() {
         this.declaracoesModulos = {};
+    }
+
+    visitarExpressaoArgumentoReferenciaFuncao(expressao: ArgumentoReferenciaFuncao): Promise<any> | void {
+        return Promise.resolve(expressao);
+    }
+
+    visitarExpressaoReferenciaFuncao(expressao: ReferenciaFuncao): Promise<any> | void {
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoAcessoMetodo(expressao: AcessoMetodo): Promise<any> | void {
@@ -239,7 +249,7 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     }
 
     visitarExpressaoContinua(declaracao?: Continua): ContinuarQuebra {
-        return Promise.resolve(declaracao);
+        return new ContinuarQuebra();
     }
 
     visitarExpressaoDeChamada(expressao: Chamada): void | Promise<any> {
@@ -303,7 +313,7 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     }
 
     visitarExpressaoSustar(declaracao?: Sustar): SustarQuebra {
-        return Promise.resolve(declaracao);
+        return new SustarQuebra();
     }
 
     visitarExpressaoTupla(expressao: Tupla): Promise<any> {
