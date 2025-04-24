@@ -80,6 +80,10 @@ export class ResolvedorMapler implements VisitanteComumInterface {
         this.declaracoesModulos = {};
     }
 
+    visitarExpressaoFuncaoConstruto(expressao: FuncaoConstruto): Promise<any> | void {
+        return Promise.resolve(expressao);
+    }
+
     visitarExpressaoArgumentoReferenciaFuncao(expressao: ArgumentoReferenciaFuncao): Promise<any> | void {
         return Promise.resolve(expressao);
     }
@@ -257,10 +261,6 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     }
 
     visitarExpressaoDefinirValor(expressao: DefinirValor<string>): void | Promise<any> {
-        return Promise.resolve(expressao);
-    }
-
-    visitarExpressaoDeleguaFuncao(expressao: FuncaoConstruto): void | Promise<any> {
         return Promise.resolve(expressao);
     }
 
