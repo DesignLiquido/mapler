@@ -86,6 +86,10 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.eEstruturaPara = false;
     }
 
+    visitarExpressaoFuncaoConstruto(expressao: FuncaoConstruto): Promise<any> | void {
+        throw new Error('Método não implementado.');
+    }
+
     visitarExpressaoArgumentoReferenciaFuncao(expressao: ArgumentoReferenciaFuncao): Promise<any> | void {
         throw new Error('Método não implementado.');
     }
