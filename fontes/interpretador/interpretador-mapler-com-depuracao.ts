@@ -1,5 +1,5 @@
-import { AcessoIndiceVariavel, Binario, Construto, Variavel } from '@designliquido/delegua/construtos';
-import { EscrevaMesmaLinha, Escreva, Leia, InicioAlgoritmo } from '@designliquido/delegua/declaracoes';
+import { AcessoIndiceVariavel, Binario, Construto, Leia, Variavel } from '@designliquido/delegua/construtos';
+import { EscrevaMesmaLinha, Escreva, InicioAlgoritmo } from '@designliquido/delegua/declaracoes';
 import { InterpretadorComDepuracao } from '@designliquido/delegua/interpretador';
 
 import * as comum from './comum';

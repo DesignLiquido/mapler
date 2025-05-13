@@ -2,6 +2,7 @@ import { RetornoLexador, RetornoAvaliadorSintatico } from '@designliquido/delegu
 import { AvaliadorSintaticoBase } from '@designliquido/delegua/avaliador-sintatico/avaliador-sintatico-base';
 import {
     Bloco,
+    Comentario,
     Declaracao,
     Enquanto,
     Escolha,
@@ -11,7 +12,6 @@ import {
     Fazer,
     FuncaoDeclaracao,
     InicioAlgoritmo,
-    Leia,
     Para,
     Se,
     Sustar,
@@ -23,11 +23,11 @@ import {
     AtribuicaoPorIndice,
     Atribuir,
     Binario,
-    Comentario,
     Construto,
     FimPara,
     FormatacaoEscrita,
     FuncaoConstruto,
+    Leia,
     Literal,
     Logico,
     Unario,
@@ -341,7 +341,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
     }
 
     expressao(): Construto {
-        if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.LER)) return this.declaracaoLeia();
+        if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.LER)) return this.expressaoLeia();
         return this.atribuir();
     }
 
@@ -544,7 +544,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
      * Análise de uma declaração `leia()`. No Mapler, `leia()` aceita 1..N argumentos.
      * @returns Uma declaração `Leia`.
      */
-    declaracaoLeia(): Leia {
+    expressaoLeia(): Leia {
         const simboloAtual = this.avancarEDevolverAnterior();
 
         const argumentos = [];
@@ -781,7 +781,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
                 this.avancarEDevolverAnterior();
                 return null;
             case tiposDeSimbolos.LER:
-                return this.declaracaoLeia();
+                return this.expressaoLeia();
             case tiposDeSimbolos.MODULO:
                 if (!this.lendoModulos) {
                     throw this.erro(simboloAtual, 'Esperado instrução "FIM" antes de começar a ler módulos.');

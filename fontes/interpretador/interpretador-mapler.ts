@@ -1,11 +1,10 @@
-import { Binario, ExpressaoRegular, Variavel } from '@designliquido/delegua/construtos';
+import { Binario, ExpressaoRegular, Leia, Variavel } from '@designliquido/delegua/construtos';
 import {
     Aleatorio,
     Const,
     Escreva,
     EscrevaMesmaLinha,
-    InicioAlgoritmo,
-    Leia,
+    InicioAlgoritmo
 } from '@designliquido/delegua/declaracoes';
 import { InterpretadorBase } from '@designliquido/delegua/interpretador';
 
