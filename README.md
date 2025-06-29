@@ -2,6 +2,21 @@
 
 Nossa implementação do dialeto Portugol Mapler, usando TypeScript. 
 
+  <p align="center">
+    <img src="./recursos/imagens/badge-statements.svg" />
+    <img src="./recursos/imagens/badge-lines.svg" />
+    <img src="./recursos/imagens/badge-functions.svg" />
+    <img src="./recursos/imagens/badge-branches.svg" />
+    <a href="https://github.com/DesignLiquido/mapler/issues" target="_blank">
+      <img src="https://img.shields.io/github/issues/Designliquido/mapler" />
+    </a>
+    <a href="https://www.npmjs.com/package/@designliquido/mapler" target="_blank">
+      <img src="https://img.shields.io/npm/v/@designliquido/mapler" />
+    </a>
+    <img src="https://img.shields.io/npm/dw/@designliquido/mapler" />
+    <img src="https://img.shields.io/github/license/Designliquido/mapler" />
+  </p>
+
 ## Sobre este dialeto
 
 Este dialeto tenta implementar da forma mais fidedigna possível todos os comportamentos de execução da aplicação Mapler original, até então na versão 0.0.6. Como a aplicação original funciona apenas dentro de um editor bem específico, decidimos implementar um dialeto que pode ser reusado em qualquer sistema operacional e em qualquer dispositivo, além de ser executado na Web e por linha de comando.
