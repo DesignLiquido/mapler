@@ -57,6 +57,8 @@ import {
     AcessoPropriedade,
     ArgumentoReferenciaFuncao,
     ReferenciaFuncao,
+    ComentarioComoConstruto,
+    Separador,
 } from '@designliquido/delegua';
 import { VisitanteComumInterface } from '@designliquido/delegua/interfaces';
 import { ContinuarQuebra, RetornoQuebra, SustarQuebra } from '@designliquido/delegua/quebras';
@@ -84,6 +86,14 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.devePularLinha = true;
         this.deveIndentar = true;
         this.eEstruturaPara = false;
+    }
+
+    visitarExpressaoComentario(expressao: ComentarioComoConstruto): Promise<any> | void {
+        throw new Error('Método não implementado.');
+    }
+
+    visitarExpressaoSeparador(expressao: Separador): Promise<any> | void {
+        throw new Error('Método não implementado.');
     }
 
     visitarExpressaoFuncaoConstruto(expressao: FuncaoConstruto): Promise<any> | void {
