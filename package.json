@@ -1,7 +1,7 @@
 {
     "name": "@designliquido/mapler",
     "description": "Dialeto de Mapler baseado em Delégua e TypeScript",
-    "version": "0.1.47",
+    "version": "0.1.48",
     "license": "MIT",
     "bugs": {
         "url": "https://github.com/DesignLiquido/mapler/issues"
