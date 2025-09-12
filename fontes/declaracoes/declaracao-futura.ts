@@ -20,4 +20,8 @@ export class DeclaracaoFutura extends Declaracao {
             'A visita a uma declaração futura nunca deve acontecer. Esta declaração precisa ser substituída na Avaliação Sintática.'
         );
     }
+
+    paraTexto(): string {
+        return `<declaração-futura />`;
+    }
 }

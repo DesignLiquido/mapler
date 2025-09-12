@@ -62,10 +62,12 @@ import {
 } from '@designliquido/delegua';
 import { VisitanteComumInterface } from '@designliquido/delegua/interfaces';
 import { ContinuarQuebra, RetornoQuebra, SustarQuebra } from '@designliquido/delegua/quebras';
+
+import { PilhaEscoposFormatacao } from './pilha-escopos-formatacao';
+
 import tiposDeDadosComum from '../tipos-de-dados/comum';
 import tiposDeDadosMapler from '../tipos-de-dados/mapler';
 import tiposDeSimbolos from '../tipos-de-simbolos/lexico-regular';
-import { PilhaEscoposFormatacao } from './pilha-escopos-formatacao';
 
 export class FormatadorMapler implements VisitanteComumInterface {
     pilhaEscoposFormatacao: PilhaEscoposFormatacao;
@@ -119,9 +121,11 @@ export class FormatadorMapler implements VisitanteComumInterface {
     visitarDeclaracaoAleatorio(declaracao: Aleatorio): Promise<any> {
         throw new Error('Método não implementado.');
     }
+    
     visitarDeclaracaoCabecalhoPrograma(declaracao: CabecalhoPrograma): Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarDeclaracaoClasse(declaracao: Classe): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -135,15 +139,19 @@ export class FormatadorMapler implements VisitanteComumInterface {
     visitarDeclaracaoConst(declaracao: Const): Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarDeclaracaoConstMultiplo(declaracao: ConstMultiplo): Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarDeclaracaoDeExpressao(declaracao: Expressao): void | Promise<any> {
-        throw new Error('Método não implementado.');
+        return this.formatarDeclaracaoOuConstruto(declaracao.expressao);
     }
+
     visitarDeclaracaoDefinicaoFuncao(declaracao: FuncaoDeclaracao): void {
         throw new Error('Método não implementado.');
     }
+
     visitarDeclaracaoEnquanto(declaracao: Enquanto) {
         this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}enquanto `;
         this.formatarDeclaracaoOuConstruto(declaracao.condicao);
@@ -153,9 +161,11 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.formatarDeclaracaoOuConstruto(declaracao.corpo);
         this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}fim enquanto;${this.quebraLinha}`;
     }
+
     visitarDeclaracaoEscolha(declaracao: Escolha): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarDeclaracaoEscreva(declaracao: Escreva): void | Promise<any> {
         this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}escrever `;
         this.deveIndentar = false;
@@ -171,9 +181,11 @@ export class FormatadorMapler implements VisitanteComumInterface {
 
         this.codigoFormatado += `;${this.quebraLinha}`;
     }
+
     visitarDeclaracaoEscrevaMesmaLinha(declaracao: EscrevaMesmaLinha): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarDeclaracaoFazer(declaracao: Fazer) {
         this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}repita${this.quebraLinha}`;
         this.formatarDeclaracaoOuConstruto(declaracao.caminhoFazer);
@@ -181,6 +193,7 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.formatarDeclaracaoOuConstruto(declaracao.condicaoEnquanto);
         this.codigoFormatado += `;${this.quebraLinha}`;
     }
+
     visitarDeclaracaoImportar(declaracao: Importar): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -196,6 +209,7 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}para `;
         this.devePularLinha = false;
         this.eEstruturaPara = true;
+
         if (declaracao.inicializador) {
             this.deveIndentar = false;
             if (Array.isArray(declaracao.inicializador)) {
@@ -221,9 +235,11 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.devePularLinha = true;
         this.eEstruturaPara = false;
     }
+
     visitarDeclaracaoParaCada(declaracao: ParaCada): Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarDeclaracaoSe(declaracao: Se) {
         this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}se `;
         this.formatarDeclaracaoOuConstruto(declaracao.condicao);
@@ -241,9 +257,11 @@ export class FormatadorMapler implements VisitanteComumInterface {
         }
         this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}fim se;${this.quebraLinha}`;
     }
+
     visitarDeclaracaoTendoComo(declaracao: TendoComo): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarDeclaracaoTente(declaracao: Tente): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -330,6 +348,7 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.formatarDeclaracaoOuConstruto(expressao.expressao);
         this.codigoFormatado += ')';
     }
+
     visitarExpressaoAtribuicaoPorIndice(expressao: AtribuicaoPorIndice): any {
         const variavel = expressao.objeto as Variavel;
         let posicao;
@@ -348,9 +367,11 @@ export class FormatadorMapler implements VisitanteComumInterface {
 
         this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}${variavel.simbolo.lexema}[${posicao}] <- ${valor};${this.quebraLinha}`;
     }
+
     visitarExpressaoAtribuicaoPorIndicesMatriz(expressao: AtribuicaoPorIndicesMatriz): Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarExpressaoBinaria(expressao: Binario) {
         this.formatarDeclaracaoOuConstruto(expressao.esquerda);
         switch (expressao.operador.tipo) {
@@ -390,33 +411,43 @@ export class FormatadorMapler implements VisitanteComumInterface {
         }
         this.formatarDeclaracaoOuConstruto(expressao.direita);
     }
+
     visitarExpressaoBloco(declaracao: Bloco): any {
         this.formatarBlocoOuVetorDeclaracoes(declaracao.declaracoes);
     }
+
     visitarExpressaoContinua(declaracao?: Continua): ContinuarQuebra {
         throw new Error('Método não implementado.');
     }
+
     visitarExpressaoDeChamada(expressao: Chamada): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarExpressaoDefinirValor(expressao: DefinirValor<string>): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarExpressaoDeleguaFuncao(expressao: FuncaoConstruto): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarExpressaoDeVariavel(expressao: Variavel) {
         this.codigoFormatado += expressao.simbolo.lexema;
     }
+
     visitarExpressaoDicionario(expressao: Dicionario): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarExpressaoExpressaoRegular(expressao: ExpressaoRegular<string>): Promise<RegExp> {
         throw new Error('Método não implementado.');
     }
+
     visitarExpressaoFalhar(expressao: Falhar): Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarExpressaoFimPara(declaracao: FimPara): any {
         if (declaracao.incremento) {
             this.codigoFormatado += ` passo `;
@@ -424,12 +455,15 @@ export class FormatadorMapler implements VisitanteComumInterface {
             this.formatarDeclaracaoOuConstruto(incremento.expressao.valor.direita);
         }
     }
+
     visitarExpressaoFormatacaoEscrita(declaracao: FormatacaoEscrita): void | Promise<any> {
         this.formatarDeclaracaoOuConstruto(declaracao.expressao);
     }
+
     visitarExpressaoIsto(expressao: Isto): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarExpressaoLeia(expressao: Leia): any {
         this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}ler `;
         for (let argumento of expressao.argumentos) {
@@ -467,21 +501,27 @@ export class FormatadorMapler implements VisitanteComumInterface {
     visitarExpressaoLogica(expressao: Logico<string>): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarExpressaoRetornar(declaracao: Retorna): Promise<RetornoQuebra> {
         throw new Error('Método não implementado.');
     }
+
     visitarExpressaoSuper(expressao: Super<string>): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarExpressaoSustar(declaracao?: Sustar): SustarQuebra {
         throw new Error('Método não implementado.');
     }
+
     visitarExpressaoTupla(expressao: Tupla): Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarExpressaoTipoDe(expressao: TipoDe<string>): Promise<any> {
         throw new Error('Método não implementado.');
     }
+
     visitarExpressaoUnaria(expressao: Unario) {
         let operador: string;
         switch (expressao.operador.tipo) {
@@ -520,6 +560,9 @@ export class FormatadorMapler implements VisitanteComumInterface {
                 break;
             case 'Comentario':
                 this.visitarDeclaracaoComentario(declaracaoOuConstruto as Comentario);
+                break;
+            case 'Expressao':
+                this.visitarDeclaracaoDeExpressao(declaracaoOuConstruto as Expressao);
                 break;
             case 'InicioAlgoritmo':
                 this.visitarDeclaracaoInicioAlgoritmo(declaracaoOuConstruto as Var);

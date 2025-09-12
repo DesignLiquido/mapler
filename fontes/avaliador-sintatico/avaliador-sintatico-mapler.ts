@@ -666,11 +666,11 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
             this.hashArquivo,
             Number(simboloPara.linha),
             // Inicialização.
-            new Atribuir(
+            new Expressao(new Atribuir(
                 this.hashArquivo, 
                 new Variavel(this.hashArquivo, simboloVariavelIteracao, 'inteiro'), 
                 literalOuVariavelInicio
-            ),
+            )),
             // Condição.
             new Binario(
                 this.hashArquivo,

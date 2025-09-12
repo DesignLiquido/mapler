@@ -10,11 +10,16 @@ describe('Interpretador', () => {
         let resolvedor: ResolvedorMapler;
         let interpretador: InterpretadorMapler;
 
+        let _saidas: string[] = [];
+        const funcaoSaida = (texto: string) => {
+            _saidas.push(texto);
+        }
+
         beforeEach(() => {
             lexador = new LexadorMapler();
             avaliadorSintatico = new AvaliadorSintaticoMapler();
             resolvedor = new ResolvedorMapler();
-            interpretador = new InterpretadorMapler(process.cwd());
+            interpretador = new InterpretadorMapler(process.cwd(), false, funcaoSaida, funcaoSaida);
         });
 
         describe('Cenários de sucesso', () => {
