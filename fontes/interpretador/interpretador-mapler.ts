@@ -1,6 +1,5 @@
 import { Binario, ExpressaoRegular, Leia, Variavel } from '@designliquido/delegua/construtos';
 import {
-    Aleatorio,
     Const,
     Escreva,
     EscrevaMesmaLinha,
@@ -28,10 +27,6 @@ export class InterpretadorMapler extends InterpretadorBase {
     }
 
     visitarExpressaoExpressaoRegular(expressao: ExpressaoRegular): Promise<any> {
-        throw new Error('Método não implementado.');
-    }
-
-    visitarDeclaracaoAleatorio(declaracao: Aleatorio): Promise<any> {
         throw new Error('Método não implementado.');
     }
 

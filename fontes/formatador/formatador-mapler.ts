@@ -1,5 +1,4 @@
 import {
-    Aleatorio,
     CabecalhoPrograma,
     Classe,
     Comentario,
@@ -115,10 +114,6 @@ export class FormatadorMapler implements VisitanteComumInterface {
     }
 
     visitarExpressaoAcessoPropriedade(expressao: AcessoPropriedade): Promise<any> | void {
-        throw new Error('Método não implementado.');
-    }
-
-    visitarDeclaracaoAleatorio(declaracao: Aleatorio): Promise<any> {
         throw new Error('Método não implementado.');
     }
     

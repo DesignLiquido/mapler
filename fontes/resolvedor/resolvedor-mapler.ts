@@ -1,5 +1,4 @@
 import {
-    Aleatorio,
     CabecalhoPrograma,
     Classe,
     Comentario,
@@ -108,10 +107,6 @@ export class ResolvedorMapler implements VisitanteComumInterface {
 
     visitarExpressaoAcessoPropriedade(expressao: AcessoPropriedade): Promise<any> | void {
         return Promise.resolve(expressao);
-    }
-
-    visitarDeclaracaoAleatorio(declaracao: Aleatorio): Promise<any> {
-        return Promise.resolve(declaracao);
     }
 
     visitarDeclaracaoCabecalhoPrograma(declaracao: CabecalhoPrograma): Promise<any> {
