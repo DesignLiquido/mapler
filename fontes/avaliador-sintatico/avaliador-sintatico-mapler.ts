@@ -34,11 +34,11 @@ import {
     Variavel,
 } from '@designliquido/delegua/construtos';
 import { SimboloInterface } from '@designliquido/delegua/interfaces';
+import { Simbolo } from '@designliquido/delegua';
 
-import { DeclaracaoFutura } from '../declaracoes/declaracao-futura';
+import { ReferenciaFutura } from '../construtos/referencia-futura';
 
 import tiposDeSimbolos from '../tipos-de-simbolos/lexico-regular';
-import { Simbolo } from '@designliquido/delegua';
 
 export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
     lendoModulos: boolean;
@@ -252,9 +252,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.IDENTIFICADOR)) {
             const simboloIdentificador = this.simbolos[this.atual - 1];
             if (this.modulos.includes(simboloIdentificador.lexema)) {
-                // TODO: Chamar função
-                return new DeclaracaoFutura(simboloIdentificador);
-                // return new Expressao(new Chamada(simboloAtual.hashArquivo, funcaoDeclaracao.funcao, null, []))
+                return new ReferenciaFutura(simboloIdentificador);
             }
 
             return new Variavel(this.hashArquivo, simboloIdentificador);
@@ -506,11 +504,6 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         );
 
         const condicao = this.expressao();
-
-        // this.consumir(
-        //     tiposDeSimbolos.QUEBRA_LINHA,
-        //     "Esperado quebra de linha após condição de continuidade em instrução 'repita'."
-        // );
 
         return new Fazer(
             this.hashArquivo,
@@ -790,8 +783,6 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
                 return this.declaracaoModulo();
             case tiposDeSimbolos.PARA:
                 return this.declaracaoPara();
-            // case tiposDeSimbolos.PARENTESE_DIREITO:
-            //     throw new Error('Não deveria estar caindo aqui.');
             case tiposDeSimbolos.REPITA:
                 return this.declaracaoFazer();
             case tiposDeSimbolos.SE:

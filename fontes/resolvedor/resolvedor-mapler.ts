@@ -62,7 +62,7 @@ import {
 } from '@designliquido/delegua';
 import { VisitanteComumInterface } from '@designliquido/delegua/interfaces';
 import { ContinuarQuebra, RetornoQuebra, SustarQuebra } from '@designliquido/delegua/quebras';
-import { DeclaracaoFutura } from '../declaracoes/declaracao-futura';
+import { ReferenciaFutura } from '../construtos/referencia-futura';
 
 /**
  * Um resolvedor executa após a avaliação sintática, para:
@@ -157,7 +157,7 @@ export class ResolvedorMapler implements VisitanteComumInterface {
         return declaracao;
     }
 
-    async visitarDeclaracaoFutura(declaracao: DeclaracaoFutura): Promise<any> {
+    async visitarDeclaracaoFutura(declaracao: ReferenciaFutura): Promise<any> {
         const declaracaoModuloCorrespondente = this.declaracoesModulos[declaracao.identificadorFuturo];
         return Promise.resolve(
             new Expressao(new Chamada(declaracao.hashArquivo, declaracaoModuloCorrespondente.funcao, []))
@@ -338,24 +338,24 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     }
 
     protected async resolverDeclaracaoOuConstrutoForaDeBloco(declaracaoOuConstruto: Declaracao | Construto) {
-        switch (declaracaoOuConstruto.constructor.name) {
-            case 'Bloco':
+        switch (declaracaoOuConstruto.constructor) {
+            case Bloco:
                 return this.visitarExpressaoBloco(declaracaoOuConstruto as Bloco);
-            case 'DeclaracaoFutura':
-                return this.visitarDeclaracaoFutura(declaracaoOuConstruto as DeclaracaoFutura);
-            case 'Enquanto':
+            case Enquanto:
                 return this.visitarDeclaracaoEnquanto(declaracaoOuConstruto as Enquanto);
-            case 'Escreva':
+            case Escreva:
                 return this.visitarDeclaracaoEscreva(declaracaoOuConstruto as Escreva);
-            case 'Leia':
-                return this.visitarExpressaoLeia(declaracaoOuConstruto as Leia);
-            case 'FuncaoDeclaracao':
-                return this.visitarDeclaracaoDefinicaoFuncao(declaracaoOuConstruto as FuncaoDeclaracao);
-            case 'Para':
-                return this.visitarDeclaracaoPara(declaracaoOuConstruto as Para);
-            case 'Fazer':
+            case Fazer:
                 return this.visitarDeclaracaoFazer(declaracaoOuConstruto as Fazer);
-            case 'Se':
+            case FuncaoDeclaracao:
+                return this.visitarDeclaracaoDefinicaoFuncao(declaracaoOuConstruto as FuncaoDeclaracao);
+            case Leia:
+                return this.visitarExpressaoLeia(declaracaoOuConstruto as Leia);
+            case Para:
+                return this.visitarDeclaracaoPara(declaracaoOuConstruto as Para);
+            case ReferenciaFutura:
+                return this.visitarDeclaracaoFutura(declaracaoOuConstruto as ReferenciaFutura);
+            case Se:
                 return this.visitarDeclaracaoSe(declaracaoOuConstruto as Se);
             default:
                 return Promise.resolve(declaracaoOuConstruto);
