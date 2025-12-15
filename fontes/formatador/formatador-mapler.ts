@@ -59,6 +59,7 @@ import {
     ComentarioComoConstruto,
     Separador,
     TextoDocumentacao,
+    AcessoIntervaloVariavel,
 } from '@designliquido/delegua';
 import { VisitanteComumInterface } from '@designliquido/delegua/interfaces';
 import { ContinuarQuebra, RetornoQuebra, SustarQuebra } from '@designliquido/delegua/quebras';
@@ -88,6 +89,10 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.devePularLinha = true;
         this.deveIndentar = true;
         this.eEstruturaPara = false;
+    }
+
+    visitarExpressaoAcessoIntervaloVariavel(expressao: AcessoIntervaloVariavel): Promise<any> | void {
+        throw new Error('Método não implementado.');
     }
 
     visitarDeclaracaoTextoDocumentacao(declaracao: TextoDocumentacao): Promise<any> | void {
