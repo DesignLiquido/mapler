@@ -183,6 +183,141 @@ describe('Interpretador', () => {
                 expect(retornoInterpretador.erros).toHaveLength(0);
                 expect(_saidas).toBe('Olá, mundo!');
             });
+
+            it('Operadores de comparação', async () => {
+                _saidas = [];
+                const retornoLexador = lexador.mapear([
+                    'variaveis',
+                    'inicio',
+                    'escrever 10 > 5;',
+                    'escrever 10 >= 10;',
+                    'escrever 5 < 10;',
+                    'escrever 5 <= 5;',
+                    'escrever 5 <> 10;',
+                    'escrever 10 = 10;',
+                    'fim'
+                ], -1);
+
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
+                const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
+
+                expect(retornoInterpretador.erros).toHaveLength(0);
+                expect(_saidas).toHaveLength(6);
+            });
+
+            it('Divisão e subtração', async () => {
+                _saidas = [];
+                const retornoLexador = lexador.mapear([
+                    'variaveis',
+                    'resultado: inteiro;',
+                    'inicio',
+                    'resultado <- 20 / 4;',
+                    'escrever resultado;',
+                    'resultado <- 10 - 3;',
+                    'escrever resultado;',
+                    'fim'
+                ], -1);
+
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
+                const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
+
+                expect(retornoInterpretador.erros).toHaveLength(0);
+                expect(_saidas[0]).toBe('5');
+                expect(_saidas[1]).toBe('7');
+            });
+
+            it('Multiplicação de texto por número', async () => {
+                _saidas = [];
+                const retornoLexador = lexador.mapear([
+                    'variaveis',
+                    'inicio',
+                    'escrever "abc" * 3;',
+                    'fim'
+                ], -1);
+
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
+                const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
+
+                expect(retornoInterpretador.erros).toHaveLength(0);
+                expect(_saidas[0]).toBe('abcabcabc');
+            });
+
+            it('Multiplicação de número por texto', async () => {
+                _saidas = [];
+                const retornoLexador = lexador.mapear([
+                    'variaveis',
+                    'inicio',
+                    'escrever 2 * "xyz";',
+                    'fim'
+                ], -1);
+
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
+                const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
+
+                expect(retornoInterpretador.erros).toHaveLength(0);
+                expect(_saidas[0]).toBe('xyzxyz');
+            });
+
+            it('Operações aritméticas básicas', async () => {
+                _saidas = [];
+                const retornoLexador = lexador.mapear([
+                    'variaveis',
+                    'inicio',
+                    'escrever 10 + 5;',
+                    'escrever 10 - 5;',
+                    'escrever 10 * 2;',
+                    'escrever 10 / 2;',
+                    'fim'
+                ], -1);
+
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
+                const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
+
+                expect(retornoInterpretador.erros).toHaveLength(0);
+                expect(_saidas).toHaveLength(4);
+                expect(_saidas[0]).toBe('15');
+                expect(_saidas[1]).toBe('5');
+                expect(_saidas[2]).toBe('20');
+                expect(_saidas[3]).toBe('5');
+            });
+
+            it('Concatenação de texto com adição', async () => {
+                _saidas = [];
+                const retornoLexador = lexador.mapear([
+                    'variaveis',
+                    'inicio',
+                    'escrever "Olá " + "Mundo";',
+                    'escrever "Número: " + 42;',
+                    'fim'
+                ], -1);
+
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
+                const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
+
+                expect(retornoInterpretador.erros).toHaveLength(0);
+                expect(_saidas[0]).toBe('Olá Mundo');
+                expect(_saidas[1]).toBe('Número: 42');
+            });
+
+            it('Declaração InicioAlgoritmo', async () => {
+                const retornoLexador = lexador.mapear([
+                    'variaveis',
+                    'inicio',
+                    'fim'
+                ], -1);
+
+                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
+                const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
+
+                expect(retornoInterpretador.erros).toHaveLength(0);
+            });
         });
     });
 });

@@ -61,6 +61,7 @@ import {
     Separador,
     TextoDocumentacao,
     AcessoIntervaloVariavel,
+    TuplaN,
 } from '@designliquido/delegua';
 import { VisitanteComumInterface } from '@designliquido/delegua/interfaces';
 import { ContinuarQuebra, RetornoQuebra, SustarQuebra } from '@designliquido/delegua/quebras';
@@ -83,20 +84,27 @@ export class ResolvedorMapler implements VisitanteComumInterface {
         this.declaracoesModulos = {};
     }
 
+    /* istanbul ignore next */
+    visitarExpressaoTuplaN(expressao: TuplaN): Promise<any> | void {
+        throw new Error('Método não implementado.');
+    }
+
+    /* istanbul ignore next */
     visitarExpressaoAcessoIntervaloVariavel(expressao: AcessoIntervaloVariavel): Promise<any> | void {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarDeclaracaoTextoDocumentacao(declaracao: TextoDocumentacao): Promise<any> | void {
         throw new Error('Método não implementado.');
     }
 
     visitarExpressaoComentario(expressao: ComentarioComoConstruto): Promise<any> | void {
-        throw new Error('Método não implementado.');
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoSeparador(expressao: Separador): Promise<any> | void {
-        throw new Error('Método não implementado.');
+        return Promise.resolve(expressao);
     }
 
     visitarExpressaoFuncaoConstruto(expressao: FuncaoConstruto): Promise<any> | void {

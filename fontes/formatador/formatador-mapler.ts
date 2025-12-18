@@ -60,6 +60,7 @@ import {
     Separador,
     TextoDocumentacao,
     AcessoIntervaloVariavel,
+    TuplaN,
 } from '@designliquido/delegua';
 import { VisitanteComumInterface } from '@designliquido/delegua/interfaces';
 import { ContinuarQuebra, RetornoQuebra, SustarQuebra } from '@designliquido/delegua/quebras';
@@ -91,46 +92,62 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.eEstruturaPara = false;
     }
 
+    /* istanbul ignore next */
+    visitarExpressaoTuplaN(expressao: TuplaN): Promise<any> | void {
+        throw new Error('Método não implementado.');
+    }
+
+    /* istanbul ignore next */
     visitarExpressaoAcessoIntervaloVariavel(expressao: AcessoIntervaloVariavel): Promise<any> | void {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarDeclaracaoTextoDocumentacao(declaracao: TextoDocumentacao): Promise<any> | void {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoComentario(expressao: ComentarioComoConstruto): Promise<any> | void {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoSeparador(expressao: Separador): Promise<any> | void {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoFuncaoConstruto(expressao: FuncaoConstruto): Promise<any> | void {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoArgumentoReferenciaFuncao(expressao: ArgumentoReferenciaFuncao): Promise<any> | void {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoReferenciaFuncao(expressao: ReferenciaFuncao): Promise<any> | void {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoAcessoMetodo(expressao: AcessoMetodo): Promise<any> | void {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoAcessoPropriedade(expressao: AcessoPropriedade): Promise<any> | void {
         throw new Error('Método não implementado.');
     }
     
+    /* istanbul ignore next */
     visitarDeclaracaoCabecalhoPrograma(declaracao: CabecalhoPrograma): Promise<any> {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarDeclaracaoClasse(declaracao: Classe): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -141,10 +158,12 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.codigoFormatado += `${this.quebraLinha}`;
     }
 
+    /* istanbul ignore next */
     visitarDeclaracaoConst(declaracao: Const): Promise<any> {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarDeclaracaoConstMultiplo(declaracao: ConstMultiplo): Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -153,6 +172,7 @@ export class FormatadorMapler implements VisitanteComumInterface {
         return this.formatarDeclaracaoOuConstruto(declaracao.expressao);
     }
 
+    /* istanbul ignore next */
     visitarDeclaracaoDefinicaoFuncao(declaracao: FuncaoDeclaracao): void {
         throw new Error('Método não implementado.');
     }
@@ -167,6 +187,7 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}fim enquanto;${this.quebraLinha}`;
     }
 
+    /* istanbul ignore next */
     visitarDeclaracaoEscolha(declaracao: Escolha): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -187,6 +208,7 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.codigoFormatado += `;${this.quebraLinha}`;
     }
 
+    /* istanbul ignore next */
     visitarDeclaracaoEscrevaMesmaLinha(declaracao: EscrevaMesmaLinha): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -199,6 +221,7 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.codigoFormatado += `;${this.quebraLinha}`;
     }
 
+    /* istanbul ignore next */
     visitarDeclaracaoImportar(declaracao: Importar): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -241,6 +264,7 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.eEstruturaPara = false;
     }
 
+    /* istanbul ignore next */
     visitarDeclaracaoParaCada(declaracao: ParaCada): Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -263,10 +287,12 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}fim se;${this.quebraLinha}`;
     }
 
+    /* istanbul ignore next */
     visitarDeclaracaoTendoComo(declaracao: TendoComo): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarDeclaracaoTente(declaracao: Tente): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -296,6 +322,7 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.codigoFormatado += `;${this.quebraLinha}`;
     }
 
+    /* istanbul ignore next */
     visitarDeclaracaoVarMultiplo(declaracao: VarMultiplo): Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -340,10 +367,12 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.codigoFormatado += `${variavel}[${valor}]`;
     }
 
+    /* istanbul ignore next */
     visitarExpressaoAcessoElementoMatriz(expressao: AcessoElementoMatriz<string>): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoAcessoMetodoOuPropriedade(expressao: AcessoMetodoOuPropriedade<string>): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -373,6 +402,7 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.codigoFormatado += `${' '.repeat(this.indentacaoAtual)}${variavel.simbolo.lexema}[${posicao}] <- ${valor};${this.quebraLinha}`;
     }
 
+    /* istanbul ignore next */
     visitarExpressaoAtribuicaoPorIndicesMatriz(expressao: AtribuicaoPorIndicesMatriz): Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -421,18 +451,22 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.formatarBlocoOuVetorDeclaracoes(declaracao.declaracoes);
     }
 
+    /* istanbul ignore next */
     visitarExpressaoContinua(declaracao?: Continua): ContinuarQuebra {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoDeChamada(expressao: Chamada): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoDefinirValor(expressao: DefinirValor<string>): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoDeleguaFuncao(expressao: FuncaoConstruto): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -441,14 +475,17 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.codigoFormatado += expressao.simbolo.lexema;
     }
 
+    /* istanbul ignore next */
     visitarExpressaoDicionario(expressao: Dicionario): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoExpressaoRegular(expressao: ExpressaoRegular<string>): Promise<RegExp> {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoFalhar(expressao: Falhar): Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -465,6 +502,7 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.formatarDeclaracaoOuConstruto(declaracao.expressao);
     }
 
+    /* istanbul ignore next */
     visitarExpressaoIsto(expressao: Isto): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -503,26 +541,32 @@ export class FormatadorMapler implements VisitanteComumInterface {
         this.codigoFormatado += `${expressao.valor}`;
     }
 
+    /* istanbul ignore next */
     visitarExpressaoLogica(expressao: Logico<string>): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoRetornar(declaracao: Retorna): Promise<RetornoQuebra> {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoSuper(expressao: Super<string>): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoSustar(declaracao?: Sustar): SustarQuebra {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoTupla(expressao: Tupla): Promise<any> {
         throw new Error('Método não implementado.');
     }
 
+    /* istanbul ignore next */
     visitarExpressaoTipoDe(expressao: TipoDe<string>): Promise<any> {
         throw new Error('Método não implementado.');
     }
@@ -551,74 +595,76 @@ export class FormatadorMapler implements VisitanteComumInterface {
                 break;
         }
     }
+
+    /* istanbul ignore next */
     visitarExpressaoVetor(expressao: Vetor): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
 
     formatarDeclaracaoOuConstruto(declaracaoOuConstruto: Declaracao | Construto): void {
-        switch (declaracaoOuConstruto.constructor.name) {
-            case 'Atribuir':
-                this.visitarExpressaoDeAtribuicao(declaracaoOuConstruto as Atribuir);
-                break;
-            case 'Binario':
-                this.visitarExpressaoBinaria(declaracaoOuConstruto as Binario);
-                break;
-            case 'Comentario':
-                this.visitarDeclaracaoComentario(declaracaoOuConstruto as Comentario);
-                break;
-            case 'Expressao':
-                this.visitarDeclaracaoDeExpressao(declaracaoOuConstruto as Expressao);
-                break;
-            case 'InicioAlgoritmo':
-                this.visitarDeclaracaoInicioAlgoritmo(declaracaoOuConstruto as Var);
-                break;
-            case 'Literal':
-                this.visitarExpressaoLiteral(declaracaoOuConstruto as Literal);
-                break;
-            case 'Var':
-                this.visitarDeclaracaoVar(declaracaoOuConstruto as Var);
-                break;
-            case 'Variavel':
-                this.visitarExpressaoDeVariavel(declaracaoOuConstruto as Variavel);
-                break;
-            case 'Escreva':
-                this.visitarDeclaracaoEscreva(declaracaoOuConstruto as Escreva);
-                break;
-            case 'FormatacaoEscrita':
-                this.visitarExpressaoFormatacaoEscrita(declaracaoOuConstruto as FormatacaoEscrita);
-                break;
-            case 'Leia':
-                this.visitarExpressaoLeia(declaracaoOuConstruto as Leia);
-                break;
-            case 'Se':
-                this.visitarDeclaracaoSe(declaracaoOuConstruto as Se);
-                break;
-            case 'Bloco':
-                this.visitarExpressaoBloco(declaracaoOuConstruto as Bloco);
-                break;
-            case 'Unario':
-                this.visitarExpressaoUnaria(declaracaoOuConstruto as Unario);
-                break;
-            case 'Para':
-                this.visitarDeclaracaoPara(declaracaoOuConstruto as Para);
-                break;
-            case 'Enquanto':
-                this.visitarDeclaracaoEnquanto(declaracaoOuConstruto as Enquanto);
-                break;
-            case 'Fazer':
-                this.visitarDeclaracaoFazer(declaracaoOuConstruto as Fazer);
-                break;
-            case 'Agrupamento':
+        switch (declaracaoOuConstruto.constructor) {
+            case Agrupamento:
                 this.visitarExpressaoAgrupamento(declaracaoOuConstruto as Agrupamento);
                 break;
-            case 'AtribuicaoPorIndice':
+            case AtribuicaoPorIndice:
                 this.visitarExpressaoAtribuicaoPorIndice(declaracaoOuConstruto as AtribuicaoPorIndice);
                 break;
-            case 'AcessoIndiceVariavel':
+            case AcessoIndiceVariavel:
                 this.visitarExpressaoAcessoIndiceVariavel(declaracaoOuConstruto as AcessoIndiceVariavel);
                 break;
-            case 'FimPara':
+            case Atribuir:
+                this.visitarExpressaoDeAtribuicao(declaracaoOuConstruto as Atribuir);
+                break;
+            case Binario:
+                this.visitarExpressaoBinaria(declaracaoOuConstruto as Binario);
+                break;
+            case Bloco:
+                this.visitarExpressaoBloco(declaracaoOuConstruto as Bloco);
+                break;
+            case Comentario:
+                this.visitarDeclaracaoComentario(declaracaoOuConstruto as Comentario);
+                break;
+            case Enquanto:
+                this.visitarDeclaracaoEnquanto(declaracaoOuConstruto as Enquanto);
+                break;
+            case Escreva:
+                this.visitarDeclaracaoEscreva(declaracaoOuConstruto as Escreva);
+                break;
+            case Expressao:
+                this.visitarDeclaracaoDeExpressao(declaracaoOuConstruto as Expressao);
+                break;
+            case Fazer:
+                this.visitarDeclaracaoFazer(declaracaoOuConstruto as Fazer);
+                break;
+            case FimPara:
                 this.visitarExpressaoFimPara(declaracaoOuConstruto as FimPara);
+                break;
+            case InicioAlgoritmo:
+                this.visitarDeclaracaoInicioAlgoritmo(declaracaoOuConstruto as Var);
+                break;
+            case Literal:
+                this.visitarExpressaoLiteral(declaracaoOuConstruto as Literal);
+                break;
+            case FormatacaoEscrita:
+                this.visitarExpressaoFormatacaoEscrita(declaracaoOuConstruto as FormatacaoEscrita);
+                break;
+            case Leia:
+                this.visitarExpressaoLeia(declaracaoOuConstruto as Leia);
+                break;
+            case Para:
+                this.visitarDeclaracaoPara(declaracaoOuConstruto as Para);
+                break;
+            case Se:
+                this.visitarDeclaracaoSe(declaracaoOuConstruto as Se);
+                break;
+            case Unario:
+                this.visitarExpressaoUnaria(declaracaoOuConstruto as Unario);
+                break;
+            case Var:
+                this.visitarDeclaracaoVar(declaracaoOuConstruto as Var);
+                break;
+            case Variavel:
+                this.visitarExpressaoDeVariavel(declaracaoOuConstruto as Variavel);
                 break;
             default:
                 console.log(declaracaoOuConstruto.constructor.name);

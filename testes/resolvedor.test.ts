@@ -93,6 +93,139 @@ describe('Resolvedor (Mapler)', () => {
                 expect(retornoResolvedor).toHaveLength(12);
                 expect(espiaoVisitarDeclaracaoFutura).toHaveBeenCalledTimes(4);
             });
+
+            it('Resolução de programa simples sem módulos', async () => {
+                const retornoLexador = lexadorMapler.mapear([
+                    'variaveis',
+                    'nome: cadeia;',
+                    'idade: inteiro;',
+                    'inicio',
+                    'nome <- "Mapler";',
+                    'idade <- 10;',
+                    'escrever nome;',
+                    'escrever idade;',
+                    'fim'
+                ], -1);
+
+                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedorMapler.resolver(retornoAvaliadorSintatico.declaracoes);
+
+                expect(retornoResolvedor).toBeTruthy();
+                expect(retornoResolvedor.length).toBeGreaterThan(0);
+            });
+
+            it('Resolução com estruturas de controle', async () => {
+                const retornoLexador = lexadorMapler.mapear([
+                    'variaveis',
+                    'i: inteiro;',
+                    'inicio',
+                    'i <- 0;',
+                    'enquanto i < 5 faca',
+                    '    escrever i;',
+                    '    i <- i + 1;',
+                    'fim enquanto;',
+                    'se i = 5 entao',
+                    '    escrever "Concluído";',
+                    'fim se;',
+                    'fim'
+                ], -1);
+
+                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedorMapler.resolver(retornoAvaliadorSintatico.declaracoes);
+
+                expect(retornoResolvedor).toBeTruthy();
+                expect(retornoResolvedor.length).toBeGreaterThan(0);
+            });
+
+            it('Resolução com expressões binárias', async () => {
+                const retornoLexador = lexadorMapler.mapear([
+                    'variaveis',
+                    'resultado: inteiro;',
+                    'inicio',
+                    'resultado <- 10 + 5 * 2;',
+                    'escrever resultado;',
+                    'fim'
+                ], -1);
+
+                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedorMapler.resolver(retornoAvaliadorSintatico.declaracoes);
+
+                expect(retornoResolvedor).toBeTruthy();
+                expect(retornoResolvedor.length).toBeGreaterThan(0);
+            });
+
+            it('Resolução com variáveis e literais', async () => {
+                const retornoLexador = lexadorMapler.mapear([
+                    'variaveis',
+                    'texto: cadeia;',
+                    'numero: real;',
+                    'flag: logico;',
+                    'inicio',
+                    'texto <- "teste";',
+                    'numero <- 3.14;',
+                    'flag <- verdadeiro;',
+                    'escrever texto, numero, flag;',
+                    'fim'
+                ], -1);
+
+                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedorMapler.resolver(retornoAvaliadorSintatico.declaracoes);
+
+                expect(retornoResolvedor).toBeTruthy();
+                expect(retornoResolvedor.length).toBeGreaterThan(0);
+            });
+
+            it('Resolução com expressões lógicas', async () => {
+                const retornoLexador = lexadorMapler.mapear([
+                    'variaveis',
+                    'a, b: logico;',
+                    'inicio',
+                    'a <- verdadeiro;',
+                    'b <- falso;',
+                    'se a e nao b entao',
+                    '    escrever "Condição atendida";',
+                    'fim se;',
+                    'fim'
+                ], -1);
+
+                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedorMapler.resolver(retornoAvaliadorSintatico.declaracoes);
+
+                expect(retornoResolvedor).toBeTruthy();
+                expect(retornoResolvedor.length).toBeGreaterThan(0);
+            });
+
+            it('Resolução com módulo único', async () => {
+                const retornoLexador = lexadorMapler.mapear([
+                    'variaveis',
+                    'saudacao: modulo;',
+                    'inicio',
+                    'saudacao;',
+                    'fim',
+                    'modulo saudacao',
+                    'escrever "Olá!";',
+                    'fim modulo;'
+                ], -1);
+
+                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedorMapler.resolver(retornoAvaliadorSintatico.declaracoes);
+
+                expect(retornoResolvedor).toBeTruthy();
+                expect(retornoResolvedor.length).toBeGreaterThan(0);
+            });
+
+            it('Resolução de programa vazio', async () => {
+                const retornoLexador = lexadorMapler.mapear([
+                    'variaveis',
+                    'inicio',
+                    'fim'
+                ], -1);
+
+                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoResolvedor = await resolvedorMapler.resolver(retornoAvaliadorSintatico.declaracoes);
+
+                expect(retornoResolvedor).toBeTruthy();
+            });
         })
     })
 })

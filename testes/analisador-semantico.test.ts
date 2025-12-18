@@ -44,6 +44,37 @@ describe('Analisador semântico (Mapler)', () => {
                 expect(retornoAnalisadorSemantico).toBeTruthy();
                 expect(retornoAnalisadorSemantico.diagnosticos).toHaveLength(1);
             });
+
+            it('Atribuição inválida de número para cadeia', () => {
+                const retornoLexador = lexadorMapler.mapear([
+                    'variaveis',
+                    'texto: cadeia;',
+                    'inicio',
+                    'texto <- 123;',
+                    'fim'
+                ], -1);
+                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoAnalisadorSemantico = analisadorSemanticoMapler.analisar(retornoAvaliadorSintatico.declaracoes);
+
+                expect(retornoAnalisadorSemantico).toBeTruthy();
+                expect(retornoAnalisadorSemantico.diagnosticos).toHaveLength(1);
+                expect(retornoAnalisadorSemantico.diagnosticos[0].mensagem).toContain('texto');
+            });
+
+            it('Atribuição inválida de texto para inteiro', () => {
+                const retornoLexador = lexadorMapler.mapear([
+                    'variaveis',
+                    'numero: inteiro;',
+                    'inicio',
+                    'numero <- "texto";',
+                    'fim'
+                ], -1);
+                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoAnalisadorSemantico = analisadorSemanticoMapler.analisar(retornoAvaliadorSintatico.declaracoes);
+
+                expect(retornoAnalisadorSemantico).toBeTruthy();
+                expect(retornoAnalisadorSemantico.diagnosticos).toHaveLength(1);
+            });
         })
     })
 })
