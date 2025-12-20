@@ -15,7 +15,7 @@ describe('Analisador semântico (Mapler)', () => {
         });
 
         describe('Cenários de falha', () => {
-            it('Atribuição inválida de número para texto', () => {
+            it('Atribuição inválida de número para texto', async () => {
                 const retornoLexador = lexadorMapler.mapear([
                     'variaveis',
                     'idade: real;',
@@ -24,13 +24,13 @@ describe('Analisador semântico (Mapler)', () => {
                     'fim'
                 ], -1);
                 const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
-                const retornoAnalisadorSemantico = analisadorSemanticoMapler.analisar(retornoAvaliadorSintatico.declaracoes);
+                const retornoAnalisadorSemantico = await analisadorSemanticoMapler.analisar(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoAnalisadorSemantico).toBeTruthy();
                 expect(retornoAnalisadorSemantico.diagnosticos).toHaveLength(1);
             });
 
-            it('Variável indefinida, não declarada', () => {
+            it('Variável indefinida, não declarada', async () => {
                 const retornoLexador = lexadorMapler.mapear([
                     'variaveis',
                     'nome: cadeia;',
@@ -39,13 +39,13 @@ describe('Analisador semântico (Mapler)', () => {
                     'fim'
                 ], -1);
                 const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
-                const retornoAnalisadorSemantico = analisadorSemanticoMapler.analisar(retornoAvaliadorSintatico.declaracoes);
+                const retornoAnalisadorSemantico = await analisadorSemanticoMapler.analisar(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoAnalisadorSemantico).toBeTruthy();
                 expect(retornoAnalisadorSemantico.diagnosticos).toHaveLength(1);
             });
 
-            it('Atribuição inválida de número para cadeia', () => {
+            it('Atribuição inválida de número para cadeia', async () => {
                 const retornoLexador = lexadorMapler.mapear([
                     'variaveis',
                     'texto: cadeia;',
@@ -54,14 +54,14 @@ describe('Analisador semântico (Mapler)', () => {
                     'fim'
                 ], -1);
                 const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
-                const retornoAnalisadorSemantico = analisadorSemanticoMapler.analisar(retornoAvaliadorSintatico.declaracoes);
+                const retornoAnalisadorSemantico = await analisadorSemanticoMapler.analisar(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoAnalisadorSemantico).toBeTruthy();
                 expect(retornoAnalisadorSemantico.diagnosticos).toHaveLength(1);
                 expect(retornoAnalisadorSemantico.diagnosticos[0].mensagem).toContain('texto');
             });
 
-            it('Atribuição inválida de texto para inteiro', () => {
+            it('Atribuição inválida de texto para inteiro', async () => {
                 const retornoLexador = lexadorMapler.mapear([
                     'variaveis',
                     'numero: inteiro;',
@@ -70,7 +70,7 @@ describe('Analisador semântico (Mapler)', () => {
                     'fim'
                 ], -1);
                 const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
-                const retornoAnalisadorSemantico = analisadorSemanticoMapler.analisar(retornoAvaliadorSintatico.declaracoes);
+                const retornoAnalisadorSemantico = await analisadorSemanticoMapler.analisar(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoAnalisadorSemantico).toBeTruthy();
                 expect(retornoAnalisadorSemantico.diagnosticos).toHaveLength(1);
