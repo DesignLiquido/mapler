@@ -11,21 +11,21 @@ describe('Formatadores > Mapler', () => {
     const tamanhoIndentacao = 4
 
 
-    it('Olá Mundo', () => {
+    it('Olá Mundo', async () => {
         const retornoLexador = lexador.mapear([
             'variaveis',
             'inicio',
             'escrever "Olá mundo";',
             'fim'
         ], -1);
-        const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+        const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
 
         const resultado = formatador.formatar(retornoAvaliadorSintatico.declaracoes);
         const linhasResultado = resultado.split(sistemaOperacional.EOL);
         expect(linhasResultado).toHaveLength(5)
         expect(linhasResultado[2]).toBe(`${" ".repeat(tamanhoIndentacao)}escrever "Olá mundo";`)
     });
-    it('Se - senao', () => {
+    it('Se - senao', async () => {
         const retornoLexador = lexador.mapear([
             'variaveis',
             'senha: cadeia;',
@@ -42,7 +42,7 @@ describe('Formatadores > Mapler', () => {
             'fim se;',
             'fim'
         ], -1);
-        const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+        const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
 
         const resultado = formatador.formatar(retornoAvaliadorSintatico.declaracoes);
         const linhasResultado = resultado.split(sistemaOperacional.EOL);
@@ -61,7 +61,7 @@ describe('Formatadores > Mapler', () => {
     });
 
     describe('Tipos de dados', () => {
-        it('Numéricos', () => {
+        it('Numéricos', async () => {
             const retornoLexador = lexador.mapear([
                 'variaveis',
                 'var_inteiro: inteiro;',
@@ -72,7 +72,7 @@ describe('Formatadores > Mapler', () => {
                 'var_real <- 2.0 + var_inteiro;',
                 'fim'
             ], -1);
-            const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+            const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
 
             const resultado = formatador.formatar(retornoAvaliadorSintatico.declaracoes);
             const linhasResultado = resultado.split(sistemaOperacional.EOL);
@@ -84,7 +84,7 @@ describe('Formatadores > Mapler', () => {
             expect(linhasResultado[5]).toBe(`${" ".repeat(tamanhoIndentacao)}var_real <- 2.5;`)
             expect(linhasResultado[6]).toBe(`${" ".repeat(tamanhoIndentacao)}var_real <- 2 + var_inteiro;`)
         });
-        it('Booleano', () => {
+        it('Booleano', async () => {
             const retornoLexador = lexador.mapear([
                 'variaveis',
                 'var_logico: logico;',
@@ -99,7 +99,7 @@ describe('Formatadores > Mapler', () => {
                 'escrever var_logico;',
                 'fim'
             ], -1);
-            const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+            const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
 
             const resultado = formatador.formatar(retornoAvaliadorSintatico.declaracoes);
             const linhasResultado = resultado.split(sistemaOperacional.EOL);
@@ -115,7 +115,7 @@ describe('Formatadores > Mapler', () => {
             expect(linhasResultado[9]).toBe(`${" ".repeat(tamanhoIndentacao)}escrever nao var_logico;`)
             expect(linhasResultado[10]).toBe(`${" ".repeat(tamanhoIndentacao)}escrever var_logico;`)
         });
-        it('Literais', () => {
+        it('Literais', async () => {
             const retornoLexador = lexador.mapear([
                 'variaveis',
                 'cidade: cadeia;',
@@ -125,7 +125,7 @@ describe('Formatadores > Mapler', () => {
                 'letra <- "c";',
                 'fim'
             ], -1);
-            const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+            const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
 
             const resultado = formatador.formatar(retornoAvaliadorSintatico.declaracoes);
             const linhasResultado = resultado.split(sistemaOperacional.EOL);
@@ -139,7 +139,7 @@ describe('Formatadores > Mapler', () => {
     })
 
     describe('Estrutura de repetições', () => {
-        it('Para', () => {
+        it('Para', async () => {
             const retornoLexador = lexador.mapear([
                 'variaveis',
                 'var_inteiro: inteiro;',
@@ -150,7 +150,7 @@ describe('Formatadores > Mapler', () => {
                 'fim para;',
                 'fim'
             ], -1);
-            const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+            const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
 
             const resultado = formatador.formatar(retornoAvaliadorSintatico.declaracoes);
             const linhasResultado = resultado.split(sistemaOperacional.EOL);
@@ -162,7 +162,7 @@ describe('Formatadores > Mapler', () => {
             expect(linhasResultado[5]).toBe(`${" ".repeat(tamanhoIndentacao * 2)}escrever i;`)
             expect(linhasResultado[6]).toBe(`${" ".repeat(tamanhoIndentacao)}fim para;`)
         });
-        it('Enquanto', () => {
+        it('Enquanto', async () => {
             const retornoLexador = lexador.mapear([
                 'variaveis',
                 'i: inteiro;',
@@ -174,7 +174,7 @@ describe('Formatadores > Mapler', () => {
                 'fim enquanto;',
                 'fim'
             ], -1);
-            const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+            const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
 
             const resultado = formatador.formatar(retornoAvaliadorSintatico.declaracoes);
             const linhasResultado = resultado.split(sistemaOperacional.EOL);
@@ -187,7 +187,7 @@ describe('Formatadores > Mapler', () => {
             expect(linhasResultado[6]).toBe(`${" ".repeat(tamanhoIndentacao * 2)}i <- i + 1;`)
             expect(linhasResultado[7]).toBe(`${" ".repeat(tamanhoIndentacao)}fim enquanto;`)
         });
-        it('Repita', () => {
+        it('Repita', async () => {
             const retornoLexador = lexador.mapear([
                 'variaveis',
                 'x: inteiro;',
@@ -199,7 +199,7 @@ describe('Formatadores > Mapler', () => {
                 'ate (x <= 5);',
                 'fim'
             ], -1);
-            const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+            const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
 
             const resultado = formatador.formatar(retornoAvaliadorSintatico.declaracoes);
             const linhasResultado = resultado.split(sistemaOperacional.EOL);
@@ -214,7 +214,7 @@ describe('Formatadores > Mapler', () => {
         });
     })
 
-    it('Vetor', () => {
+    it('Vetor', async () => {
         const retornoLexador = lexador.mapear([
             'variaveis',
             'numeros: vetor [1..9] de inteiro;',
@@ -237,7 +237,7 @@ describe('Formatadores > Mapler', () => {
             'fim enquanto;',
             'fim'
         ], -1);
-        const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+        const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
 
         const resultado = formatador.formatar(retornoAvaliadorSintatico.declaracoes);
         const linhasResultado = resultado.split(sistemaOperacional.EOL);

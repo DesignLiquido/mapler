@@ -16,7 +16,7 @@ describe('ReferenciaFutura', () => {
         referenciaFutura = new ReferenciaFutura(simbolo);
     });
 
-    it('Deve criar ReferenciaFutura com dados do símbolo', () => {
+    it('Deve criar ReferenciaFutura com dados do símbolo', async () => {
         expect(referenciaFutura.linha).toBe(10);
         expect(referenciaFutura.hashArquivo).toBe(12345);
         expect(referenciaFutura.identificadorFuturo).toBe('minhaFuncao');
@@ -26,16 +26,16 @@ describe('ReferenciaFutura', () => {
         await expect(referenciaFutura.aceitar(null)).rejects.toContain('nunca deve acontecer');
     });
 
-    it('Método paraTexto deve retornar formatação', () => {
+    it('Método paraTexto deve retornar formatação', async () => {
         const resultado = referenciaFutura.paraTexto();
         expect(resultado).toBe('<referência-futura />');
     });
 
-    it('Método paraTextoSaida deve lançar erro', () => {
+    it('Método paraTextoSaida deve lançar erro', async () => {
         expect(() => referenciaFutura.paraTextoSaida()).toThrow('Método não implementado');
     });
 
-    it('Deve preservar informações de diferentes símbolos', () => {
+    it('Deve preservar informações de diferentes símbolos', async () => {
         const outroSimbolo: SimboloInterface = {
             tipo: 'IDENTIFICADOR',
             lexema: 'outraFuncao',

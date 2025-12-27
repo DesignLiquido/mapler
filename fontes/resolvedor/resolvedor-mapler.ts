@@ -147,7 +147,10 @@ export class ResolvedorMapler implements VisitanteComumInterface {
         return Promise.resolve(declaracao);
     }
 
-    visitarDeclaracaoDeExpressao(declaracao: Expressao): void | Promise<any> {
+    async visitarDeclaracaoDeExpressao(declaracao: Expressao): Promise<any> {
+        if (declaracao.expressao instanceof ReferenciaFutura) {
+            return await this.visitarDeclaracaoFutura(declaracao.expressao);
+        }
         return Promise.resolve(declaracao);
     }
 
@@ -363,6 +366,8 @@ export class ResolvedorMapler implements VisitanteComumInterface {
                 return this.visitarDeclaracaoEnquanto(declaracaoOuConstruto as Enquanto);
             case Escreva:
                 return this.visitarDeclaracaoEscreva(declaracaoOuConstruto as Escreva);
+            case Expressao:
+                return this.visitarDeclaracaoDeExpressao(declaracaoOuConstruto as Expressao);
             case Fazer:
                 return this.visitarDeclaracaoFazer(declaracaoOuConstruto as Fazer);
             case FuncaoDeclaracao:

@@ -30,7 +30,7 @@ describe('Interpretador', () => {
                     'fim'
                 ], -1);
                 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
                 const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
@@ -42,7 +42,7 @@ describe('Interpretador', () => {
                     'variaveis inicio escrever "olá mundo"; fim',
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
                 const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
@@ -57,7 +57,7 @@ describe('Interpretador', () => {
                     'fim'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
                 const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
@@ -75,7 +75,7 @@ describe('Interpretador', () => {
                     'fim'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
                 const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
@@ -96,7 +96,7 @@ describe('Interpretador', () => {
                     'fim'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
                 const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
@@ -116,7 +116,7 @@ describe('Interpretador', () => {
                     "fim"
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
                 const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
@@ -133,7 +133,7 @@ describe('Interpretador', () => {
                     "fim",
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
                 const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
@@ -152,7 +152,7 @@ describe('Interpretador', () => {
                     "fim",
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
                 const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
@@ -176,7 +176,7 @@ describe('Interpretador', () => {
                     "fim modulo;"
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
                 const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
@@ -198,7 +198,7 @@ describe('Interpretador', () => {
                     'fim'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
                 const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
@@ -219,7 +219,7 @@ describe('Interpretador', () => {
                     'fim'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
                 const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
@@ -237,7 +237,7 @@ describe('Interpretador', () => {
                     'fim'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
                 const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
@@ -254,7 +254,7 @@ describe('Interpretador', () => {
                     'fim'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
                 const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
@@ -274,7 +274,7 @@ describe('Interpretador', () => {
                     'fim'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
                 const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
@@ -296,7 +296,7 @@ describe('Interpretador', () => {
                     'fim'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
                 const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 
@@ -312,7 +312,7 @@ describe('Interpretador', () => {
                     'fim'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedor.resolver(retornoAvaliadorSintatico.declaracoes);
                 const retornoInterpretador = await interpretador.interpretar(retornoResolvedor);
 

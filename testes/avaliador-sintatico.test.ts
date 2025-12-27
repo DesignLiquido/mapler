@@ -12,7 +12,7 @@ describe('Avaliador sintático (Mapler)', () => {
         });
 
         describe('Casos de Sucesso', () => {
-            it('Enquanto', () => {
+            it('Enquanto', async () => {
                 const retornoLexador = lexador.mapear([
                     'variaveis',
                     '    i: inteiro;',
@@ -26,26 +26,26 @@ describe('Avaliador sintático (Mapler)', () => {
                     '    fim enquanto;',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
     
                 expect(retornoAvaliadorSintatico).toBeTruthy();
                 expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(5);
             });
 
-            it('Olá Mundo', () => {
+            it('Olá Mundo', async () => {
                 const retornoLexador = lexador.mapear([
                     'variaveis',
                     'inicio',
                     'escrever "Olá mundo";',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
     
                 expect(retornoAvaliadorSintatico).toBeTruthy();
                 expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(2);
             });
 
-            it('Código com comentários', () => {
+            it('Código com comentários', async () => {
                 const retornoLexador = lexador.mapear([
                     '// Estrutura Básica:',
                     'variaveis',
@@ -59,13 +59,13 @@ describe('Avaliador sintático (Mapler)', () => {
                     'fim // Esta instrução indica o fim do algoritmo'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
     
                 expect(retornoAvaliadorSintatico).toBeTruthy();
                 expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(10);
             });
 
-            it('Módulos', () => {
+            it('Módulos', async () => {
                 const retornoLexador = lexador.mapear([
                     'variaveis',
                     '    criarConta: modulo;',
@@ -133,13 +133,13 @@ describe('Avaliador sintático (Mapler)', () => {
                     '    escrever "Valor atual do saldo: ", saldo;',
                     'fim modulo;'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
     
                 expect(retornoAvaliadorSintatico).toBeTruthy();
                 expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(12);
             });
 
-            it('Para', () => {
+            it('Para', async () => {
                 const retornoLexador = lexador.mapear([
                     'variaveis',
                     '    i: inteiro;',
@@ -149,13 +149,13 @@ describe('Avaliador sintático (Mapler)', () => {
                     '    fim para;',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
     
                 expect(retornoAvaliadorSintatico).toBeTruthy();
                 expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(3);
             });
     
-            it('Repita', () => {
+            it('Repita', async () => {
                 const retornoLexador = lexador.mapear([
                     'variaveis',
                     '    x:inteiro;',
@@ -169,13 +169,13 @@ describe('Avaliador sintático (Mapler)', () => {
                     '    ate (x <= 5);',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
     
                 expect(retornoAvaliadorSintatico).toBeTruthy();
                 expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(6);
             });
 
-            it('Se', () => {
+            it('Se', async () => {
                 const retornoLexador = lexador.mapear([
                     'variaveis',
                     '    idade: inteiro;',
@@ -193,7 +193,7 @@ describe('Avaliador sintático (Mapler)', () => {
                     '    fim se;',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
     
                 expect(retornoAvaliadorSintatico).toBeTruthy();
                 expect(retornoAvaliadorSintatico.declaracoes).toHaveLength(4);

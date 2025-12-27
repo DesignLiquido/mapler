@@ -86,7 +86,7 @@ describe('Resolvedor (Mapler)', () => {
                     'fim modulo;'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintaticoMapler.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedorMapler.resolver(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoResolvedor).toBeTruthy();
@@ -107,7 +107,7 @@ describe('Resolvedor (Mapler)', () => {
                     'fim'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintaticoMapler.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedorMapler.resolver(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoResolvedor).toBeTruthy();
@@ -130,7 +130,7 @@ describe('Resolvedor (Mapler)', () => {
                     'fim'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintaticoMapler.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedorMapler.resolver(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoResolvedor).toBeTruthy();
@@ -147,7 +147,7 @@ describe('Resolvedor (Mapler)', () => {
                     'fim'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintaticoMapler.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedorMapler.resolver(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoResolvedor).toBeTruthy();
@@ -168,7 +168,7 @@ describe('Resolvedor (Mapler)', () => {
                     'fim'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintaticoMapler.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedorMapler.resolver(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoResolvedor).toBeTruthy();
@@ -188,7 +188,7 @@ describe('Resolvedor (Mapler)', () => {
                     'fim'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintaticoMapler.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedorMapler.resolver(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoResolvedor).toBeTruthy();
@@ -207,7 +207,7 @@ describe('Resolvedor (Mapler)', () => {
                     'fim modulo;'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintaticoMapler.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedorMapler.resolver(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoResolvedor).toBeTruthy();
@@ -221,7 +221,7 @@ describe('Resolvedor (Mapler)', () => {
                     'fim'
                 ], -1);
 
-                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintaticoMapler.analisar(retornoLexador, -1);
                 const retornoResolvedor = await resolvedorMapler.resolver(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoResolvedor).toBeTruthy();

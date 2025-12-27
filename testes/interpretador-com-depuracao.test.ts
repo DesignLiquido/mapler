@@ -34,7 +34,7 @@ describe('Interpretador com Depuração (Mapler)', () => {
                     'escrever "olá mundo";',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
 
                 let execucaoFinalizada: boolean = false;
                 interpretador.finalizacaoDaExecucao = () => {
@@ -59,7 +59,7 @@ describe('Interpretador com Depuração (Mapler)', () => {
                     'escrever "linha 3";',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
 
                 let execucaoFinalizada: boolean = false;
                 interpretador.finalizacaoDaExecucao = () => {
@@ -85,7 +85,7 @@ describe('Interpretador com Depuração (Mapler)', () => {
                     'escrever resultado;',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
 
                 let execucaoFinalizada: boolean = false;
                 interpretador.finalizacaoDaExecucao = () => {
@@ -109,7 +109,7 @@ describe('Interpretador com Depuração (Mapler)', () => {
                     'escrever nome;',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
 
                 let execucaoFinalizada: boolean = false;
                 interpretador.finalizacaoDaExecucao = () => {
@@ -135,7 +135,7 @@ describe('Interpretador com Depuração (Mapler)', () => {
                     'escrever numeros[1];',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
 
                 let execucaoFinalizada: boolean = false;
                 interpretador.finalizacaoDaExecucao = () => {
@@ -154,7 +154,7 @@ describe('Interpretador com Depuração (Mapler)', () => {
                     'inicio',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintatico.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintatico.analisar(retornoLexador, -1);
 
                 let execucaoFinalizada: boolean = false;
                 interpretador.finalizacaoDaExecucao = () => {

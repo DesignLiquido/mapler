@@ -96,7 +96,9 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
     } {
         const identificadores = [];
         do {
-            identificadores.push(this.consumir(tiposDeSimbolos.IDENTIFICADOR, 'Esperado nome de variável.'));
+            identificadores.push(
+                this.consumir(tiposDeSimbolos.IDENTIFICADOR, 'Esperado nome de variável.')
+            );
         } while (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.VIRGULA));
 
         this.consumir(tiposDeSimbolos.DOIS_PONTOS, 'Esperado dois-pontos após nome de variável.');
@@ -241,39 +243,39 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         return this.atual === this.simbolos.length;
     }
 
-    primario(): Construto {
-        const simboloAtual = this.simbolos[this.atual];
+    async primario(): Promise<Construto> {
+        if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.FALSO)) {
+            const simboloAnterior = this.simbolos[this.atual - 1];
+            return new Literal(this.hashArquivo, Number(simboloAnterior.linha), false);
+        }
 
-        if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.FALSO))
-            return new Literal(this.hashArquivo, Number(simboloAtual.linha), false);
-        if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.VERDADEIRO))
-            return new Literal(this.hashArquivo, Number(simboloAtual.linha), true);
+        if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.VERDADEIRO)) {
+            const simboloAnterior = this.simbolos[this.atual - 1];
+            return new Literal(this.hashArquivo, Number(simboloAnterior.linha), true);
+        }
 
         if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.IDENTIFICADOR)) {
             const simboloIdentificador = this.simbolos[this.atual - 1];
             if (this.modulos.includes(simboloIdentificador.lexema)) {
                 return new ReferenciaFutura(simboloIdentificador);
             }
-
             return new Variavel(this.hashArquivo, simboloIdentificador);
         }
 
-        if (
-            this.verificarSeSimboloAtualEIgualA(
-                tiposDeSimbolos.NUMERO,
-                tiposDeSimbolos.CADEIA,
-                tiposDeSimbolos.CARACTERE
-            )
-        ) {
+        if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.LER)) {
+            return await this.expressaoLeia();
+        }
+
+        if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.NUMERO, tiposDeSimbolos.CADEIA, tiposDeSimbolos.CARACTERE)) {
             const simboloAnterior: SimboloInterface = this.simbolos[this.atual - 1];
             return new Literal(this.hashArquivo, Number(simboloAnterior.linha), simboloAnterior.literal);
         }
 
         if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.PARENTESE_ESQUERDO)) {
-            const expressao = this.expressao();
+            const expressao = await this.expressao();
             this.consumir(tiposDeSimbolos.PARENTESE_DIREITO, "Esperado ')' após a expressão.");
-
-            return new Agrupamento(this.hashArquivo, Number(simboloAtual.linha), expressao);
+            const simboloAnterior = this.simbolos[this.atual - 1];
+            return new Agrupamento(this.hashArquivo, Number(simboloAnterior.linha), expressao);
         }
 
         if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.PONTO_VIRGULA)) {
@@ -283,24 +285,24 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         throw this.erro(this.simbolos[this.atual], 'Esperado expressão.');
     }
 
-    comparacaoIgualdade(): Construto {
-        let expressao = this.comparar();
+    async comparacaoIgualdade(): Promise<Construto> {
+        let expressao = await this.comparar();
 
         while (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.DIFERENTE, tiposDeSimbolos.IGUAL)) {
             const simboloAnterior = this.simbolos[this.atual - 1];
-            const direito = this.comparar();
+            const direito = await this.comparar();
             expressao = new Binario(this.hashArquivo, expressao, simboloAnterior, direito);
         }
 
         return expressao;
     }
 
-    ou(): Construto {
-        let expressao = this.e();
+    async ou(): Promise<Construto> {
+        let expressao = await this.e();
 
         while (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.OU)) {
             const operador = this.simbolos[this.atual - 1];
-            const direito = this.e();
+            const direito = await this.e();
             expressao = new Logico(this.hashArquivo, expressao, operador, direito);
         }
 
@@ -311,12 +313,12 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
      * Método que resolve atribuições.
      * @returns Um construto do tipo `Atribuir`, `Conjunto` ou `AtribuicaoPorIndice`.
      */
-    atribuir(): Construto {
-        const expressao = this.ou();
+    async atribuir(): Promise<Construto> {
+        const expressao = await this.ou();
 
         if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.SETA_ATRIBUICAO)) {
             const setaAtribuicao = this.simbolos[this.atual - 1];
-            const valor = this.atribuir();
+            const valor = await this.atribuir();
 
             if (expressao instanceof Variavel) {
                 return new Atribuir(this.hashArquivo, expressao, valor);
@@ -338,31 +340,30 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         return expressao;
     }
 
-    expressao(): Construto {
-        if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.LER)) return this.expressaoLeia();
+    async expressao(): Promise<Construto> {
         return this.atribuir();
     }
 
-    blocoEscopo(): any[] {
+    async blocoEscopo(): Promise<any[]> {
         const declaracoes = [];
 
         while (this.simbolos[this.atual].tipo !== tiposDeSimbolos.FIM) {
-            declaracoes.push(this.resolverDeclaracaoForaDeBloco());
+            declaracoes.push(await this.resolverDeclaracaoForaDeBloco());
         }
 
         return declaracoes.filter((d) => d);
     }
 
-    chamar(): Construto {
-        let expressao = this.primario();
+    async chamar(): Promise<Construto> {
+        let expressao = await this.primario();
 
         while (true) {
             if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.PARENTESE_ESQUERDO)) {
-                expressao = this.finalizarChamada(expressao);
+                expressao = await this.finalizarChamada(expressao);
             } else if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.COLCHETE_ESQUERDO)) {
                 const indices = [];
                 do {
-                    indices.push(this.expressao());
+                    indices.push(await this.expressao());
                 } while (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.VIRGULA));
 
                 const indice = indices[0];
@@ -379,13 +380,13 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         return expressao;
     }
 
-    corpoDaFuncao(tipo: string): FuncaoConstruto {
+    async corpoDaFuncao(tipo: string): Promise<FuncaoConstruto> {
         const simboloAnterior = this.simbolos[this.atual - 1];
 
         // TODO: Verificar como Mapler lida com varíaveis em módulos.
         // this.validarSegmentoVariaveis();
 
-        const corpo = this.blocoEscopo();
+        const corpo = await this.blocoEscopo();
 
         this.consumir(tiposDeSimbolos.FIM, `Isso nunca dá erro.`);
         this.consumir(
@@ -405,10 +406,10 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         return new Comentario(simboloComentario.hashArquivo, simboloComentario.linha, simboloComentario.literal, false);
     }
 
-    declaracaoEnquanto(): Enquanto {
+    async declaracaoEnquanto(): Promise<Enquanto> {
         const simboloAtual = this.avancarEDevolverAnterior();
 
-        const condicao = this.expressao();
+        const condicao = await this.expressao();
 
         this.consumir(
             tiposDeSimbolos.FACA,
@@ -417,7 +418,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
 
         const declaracoes = [];
         do {
-            declaracoes.push(this.resolverDeclaracaoForaDeBloco());
+            declaracoes.push(await this.resolverDeclaracaoForaDeBloco());
         } while (
             ![tiposDeSimbolos.FIM].includes(this.simbolos[this.atual].tipo) &&
             ![tiposDeSimbolos.ENQUANTO].includes(this.simbolos[this.atual + 1].tipo)
@@ -452,14 +453,16 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         throw new Error('Método não implementado.');
     }
 
-    private logicaComumEscreva(): FormatacaoEscrita[] {
+    private async logicaComumEscreva(): Promise<FormatacaoEscrita[]> {
         const simboloAtual = this.simbolos[this.atual];
         const argumentos: FormatacaoEscrita[] = [];
 
         do {
-            const valor = this.resolverDeclaracaoForaDeBloco();
+            const valor = await this.expressao();
 
-            argumentos.push(new FormatacaoEscrita(this.hashArquivo, Number(simboloAtual.linha), valor));
+            argumentos.push(
+                new FormatacaoEscrita(this.hashArquivo, Number(simboloAtual.linha), valor)
+            );
         } while (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.VIRGULA));
 
         this.consumir(
@@ -470,18 +473,18 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         return argumentos;
     }
 
-    declaracaoEscreva(): Escreva {
+    async declaracaoEscreva(): Promise<Escreva> {
         const simboloAtual = this.avancarEDevolverAnterior();
 
-        const argumentos = this.logicaComumEscreva();
+        const argumentos = await this.logicaComumEscreva();
 
         return new Escreva(Number(simboloAtual.linha), this.hashArquivo, argumentos);
     }
 
-    declaracaoEscrevaMesmaLinha(): EscrevaMesmaLinha {
+    async declaracaoEscrevaMesmaLinha(): Promise<EscrevaMesmaLinha> {
         const simboloAtual = this.avancarEDevolverAnterior();
 
-        const argumentos = this.logicaComumEscreva();
+        const argumentos = await this.logicaComumEscreva();
 
         return new EscrevaMesmaLinha(Number(simboloAtual.linha), this.hashArquivo, argumentos);
     }
@@ -490,12 +493,12 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
      * Criação de declaração "repita".
      * @returns Um construto do tipo Fazer
      */
-    declaracaoFazer(): Fazer {
+    async declaracaoFazer(): Promise<Fazer> {
         const simboloAtual = this.avancarEDevolverAnterior();
 
         const declaracoes = [];
         do {
-            declaracoes.push(this.resolverDeclaracaoForaDeBloco());
+            declaracoes.push(await this.resolverDeclaracaoForaDeBloco());
         } while (![tiposDeSimbolos.ATE].includes(this.simbolos[this.atual].tipo));
 
         this.consumir(
@@ -503,7 +506,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
             "Esperado palavra-chave 'ate' após declaração de bloco em instrução 'repita'."
         );
 
-        const condicao = this.expressao();
+        const condicao = await this.expressao();
 
         return new Fazer(
             this.hashArquivo,
@@ -518,31 +521,15 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
     }
 
     /**
-     * Criação de declaração "interrompa".
-     * Em Mapler, "sustar" é chamada de "interrompa".
-     * @returns Uma declaração do tipo Sustar.
-     */
-    private declaracaoInterrompa(): Sustar {
-        const simboloAtual = this.avancarEDevolverAnterior();
-
-        // TODO: Contar blocos para colocar esta condição de erro.
-        /* if (this.blocos < 1) {
-            this.erro(this.simbolos[this.atual - 1], "'interrompa' deve estar dentro de um laço de repetição.");
-        } */
-
-        return new Sustar(simboloAtual);
-    }
-
-    /**
      * Análise de uma declaração `leia()`. No Mapler, `leia()` aceita 1..N argumentos.
      * @returns Uma declaração `Leia`.
      */
-    expressaoLeia(): Leia {
+    async expressaoLeia(): Promise<Leia> {
         const simboloAtual = this.avancarEDevolverAnterior();
 
         const argumentos = [];
         do {
-            argumentos.push(this.resolverDeclaracaoForaDeBloco());
+            argumentos.push(await this.resolverDeclaracaoForaDeBloco());
         } while (!this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.PONTO_VIRGULA));
 
         return new Leia(simboloAtual, argumentos);
@@ -553,17 +540,17 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
      * Um módulo aparentemente não especifica tipo de retorno.
      * @returns Uma declaração de função.
      */
-    protected declaracaoModulo(): FuncaoDeclaracao {
+    protected async declaracaoModulo(): Promise<FuncaoDeclaracao> {
         const simboloModulo = this.avancarEDevolverAnterior();
         const simboloNomeModulo = this.consumir(
             tiposDeSimbolos.IDENTIFICADOR,
             `Esperado nome do módulo após palavra reservada "modulo".`
         );
 
-        return new FuncaoDeclaracao(simboloNomeModulo, this.corpoDaFuncao(simboloModulo.tipo), null, []);
+        return new FuncaoDeclaracao(simboloNomeModulo, await this.corpoDaFuncao(simboloModulo.tipo), null, []);
     }
 
-    declaracaoPara(): Para {
+    async declaracaoPara(): Promise<Para> {
         const simboloPara: SimboloInterface = this.avancarEDevolverAnterior();
 
         const simboloVariavelIteracao: SimboloInterface = this.consumir(
@@ -571,12 +558,12 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
             `Esperado identificador após palavra reservada "para".`
         );
         this.consumir(tiposDeSimbolos.DE, `Esperado paravra reservada "de" após identificador em declaração "para".`);
-        const literalOuVariavelInicio = this.expressao();
+        const literalOuVariavelInicio = await this.expressao();
         this.consumir(
             tiposDeSimbolos.ATE,
             `Esperado paravra reservada "ate" após literal ou identificador de estado inicial em declaração "para".`
         );
-        const literalOuVariavelFim = this.expressao();
+        const literalOuVariavelFim = await this.expressao();
         this.consumir(
             tiposDeSimbolos.PASSO,
             `Esperado paravra reservada "passo" após literal ou identificador de estado final em declaração "para".`
@@ -602,7 +589,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         let passo: Construto;
         let resolverIncrementoEmExecucao = false;
         if (literalOuVariavelInicio instanceof Literal && literalOuVariavelFim instanceof Literal) {
-            passo = this.unario();
+            passo = await this.unario();
             if (passo.hasOwnProperty('operador') && (passo as Unario).operador.tipo === tiposDeSimbolos.SUBTRACAO) {
                 operadorCondicao = new Simbolo(
                     tiposDeSimbolos.MAIOR_IGUAL,
@@ -635,7 +622,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         const declaracoesBlocoPara = [];
         let simboloAtualBlocoPara: SimboloInterface = this.simbolos[this.atual];
         while (simboloAtualBlocoPara.tipo !== tiposDeSimbolos.FIM) {
-            declaracoesBlocoPara.push(this.resolverDeclaracaoForaDeBloco());
+            declaracoesBlocoPara.push(await this.resolverDeclaracaoForaDeBloco());
             simboloAtualBlocoPara = this.simbolos[this.atual];
         }
 
@@ -701,10 +688,10 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         return declaracaoPara;
     }
 
-    declaracaoSe(): Se {
+    async declaracaoSe(): Promise<Se> {
         const simboloSe: SimboloInterface = this.avancarEDevolverAnterior();
 
-        const condicao = this.expressao();
+        const condicao = await this.expressao();
 
         this.consumir(tiposDeSimbolos.ENTAO, "Esperado palavra reservada 'entao' após condição em declaração 'se'.");
 
@@ -712,14 +699,14 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         let caminhoSenao = null;
 
         do {
-            declaracoes.push(this.resolverDeclaracaoForaDeBloco());
+            declaracoes.push(await this.resolverDeclaracaoForaDeBloco());
 
             if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.SENAO)) {
                 const simboloSenao = this.simbolos[this.atual - 1];
                 const declaracoesSenao = [];
 
                 do {
-                    declaracoesSenao.push(this.resolverDeclaracaoForaDeBloco());
+                    declaracoesSenao.push(await this.resolverDeclaracaoForaDeBloco());
                 } while (
                     ![tiposDeSimbolos.FIM].includes(this.simbolos[this.atual].tipo) &&
                     ![tiposDeSimbolos.SE].includes(this.simbolos[this.atual + 1].tipo)
@@ -760,35 +747,40 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         );
     }
 
-    resolverDeclaracaoForaDeBloco(): Declaracao | Declaracao[] | Construto | Construto[] | any {
+    async resolverDeclaracaoForaDeBloco(): Promise<Declaracao | Declaracao[]> {
         const simboloAtual = this.simbolos[this.atual];
         switch (simboloAtual.tipo) {
             case tiposDeSimbolos.COMENTARIO:
                 return this.declaracaoComentario();
             case tiposDeSimbolos.ENQUANTO:
-                return this.declaracaoEnquanto();
+                return await this.declaracaoEnquanto();
             case tiposDeSimbolos.ESCREVER:
-                return this.declaracaoEscreva();
+                return await this.declaracaoEscreva();
             case tiposDeSimbolos.FIM:
                 this.lendoModulos = true;
                 this.avancarEDevolverAnterior();
                 return null;
             case tiposDeSimbolos.LER:
-                return this.expressaoLeia();
+                return new Expressao(await this.expressaoLeia());
             case tiposDeSimbolos.MODULO:
                 if (!this.lendoModulos) {
                     throw this.erro(simboloAtual, 'Esperado instrução "FIM" antes de começar a ler módulos.');
                 }
 
-                return this.declaracaoModulo();
+                return await this.declaracaoModulo();
             case tiposDeSimbolos.PARA:
-                return this.declaracaoPara();
+                return await this.declaracaoPara();
             case tiposDeSimbolos.REPITA:
-                return this.declaracaoFazer();
+                return await this.declaracaoFazer();
             case tiposDeSimbolos.SE:
-                return this.declaracaoSe();
+                return await this.declaracaoSe();
             default:
-                return this.expressao();
+                const construtoExpressao = await this.expressao();
+                if (construtoExpressao === null || construtoExpressao === undefined) {
+                    return null;
+                }
+
+                return new Expressao(construtoExpressao);
         }
     }
 
@@ -797,10 +789,10 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
      * @param retornoLexador Os símbolos entendidos pelo Lexador.
      * @param hashArquivo Obrigatório por interface mas não usado aqui.
      */
-    analisar(
+    async analisar(
         retornoLexador: RetornoLexador<SimboloInterface>,
         hashArquivo: number
-    ): RetornoAvaliadorSintatico<Declaracao> {
+    ): Promise<RetornoAvaliadorSintatico<Declaracao>> {
         this.erros = [];
         this.atual = 0;
         this.blocos = 0;
@@ -824,7 +816,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         declaracoes.push(new InicioAlgoritmo(simboloInicio.linha, simboloInicio.hashArquivo));
 
         while (!this.estaNoFinal()) {
-            declaracoes.push(this.resolverDeclaracaoForaDeBloco());
+            declaracoes.push(await this.resolverDeclaracaoForaDeBloco());
         }
 
         return {

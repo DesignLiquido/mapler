@@ -23,7 +23,7 @@ describe('Analisador semântico (Mapler)', () => {
                     'idade <- "abc";',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintaticoMapler.analisar(retornoLexador, -1);
                 const retornoAnalisadorSemantico = await analisadorSemanticoMapler.analisar(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoAnalisadorSemantico).toBeTruthy();
@@ -38,7 +38,7 @@ describe('Analisador semântico (Mapler)', () => {
                     'NOME <- "abc";',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintaticoMapler.analisar(retornoLexador, -1);
                 const retornoAnalisadorSemantico = await analisadorSemanticoMapler.analisar(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoAnalisadorSemantico).toBeTruthy();
@@ -53,7 +53,7 @@ describe('Analisador semântico (Mapler)', () => {
                     'texto <- 123;',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintaticoMapler.analisar(retornoLexador, -1);
                 const retornoAnalisadorSemantico = await analisadorSemanticoMapler.analisar(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoAnalisadorSemantico).toBeTruthy();
@@ -69,7 +69,7 @@ describe('Analisador semântico (Mapler)', () => {
                     'numero <- "texto";',
                     'fim'
                 ], -1);
-                const retornoAvaliadorSintatico = avaliadorSintaticoMapler.analisar(retornoLexador, -1);
+                const retornoAvaliadorSintatico = await avaliadorSintaticoMapler.analisar(retornoLexador, -1);
                 const retornoAnalisadorSemantico = await analisadorSemanticoMapler.analisar(retornoAvaliadorSintatico.declaracoes);
 
                 expect(retornoAnalisadorSemantico).toBeTruthy();
