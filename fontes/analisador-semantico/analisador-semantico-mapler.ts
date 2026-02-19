@@ -659,69 +659,6 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
         }
     }
 
-    /**
-     * Obtém o tipo de uma expressão (pode ser Literal, Variavel, ou Binario)
-     */
-    private obterTipoExpressao(expressao: Construto): string | null {
-        if (expressao instanceof Literal) {
-            return expressao.tipo;
-        }
-
-        if (expressao instanceof Variavel) {
-            const variavel = this.gerenciadorEscopos.buscar(expressao.simbolo.lexema);
-            return variavel?.tipo || null;
-        }
-
-        if (expressao instanceof Binario) {
-            // Para binários, tentamos inferir o tipo baseado nos operandos
-            return this.inferirTipoBinario(expressao);
-        }
-
-        if (expressao instanceof Agrupamento) {
-            return this.obterTipoExpressao(expressao.expressao);
-        }
-
-        return null;
-    }
-
-    /**
-     * Infere o tipo de resultado de uma operação binária
-     */
-    private inferirTipoBinario(binario: Binario): string | null {
-        const tipoEsquerda = this.obterTipoExpressao(binario.esquerda);
-        const tipoDireita = this.obterTipoExpressao(binario.direita);
-
-        if (!tipoEsquerda || !tipoDireita) {
-            return null;
-        }
-
-        const operadoresMatematicos = ['ADICAO', 'SUBTRACAO', 'MULTIPLICACAO', 'DIVISAO', 'MODULO'];
-        const operadoresComparacao = ['MAIOR', 'MAIOR_IGUAL', 'MENOR', 'MENOR_IGUAL', 'IGUAL', 'DIFERENTE'];
-
-        if (operadoresComparacao.includes(binario.operador.tipo)) {
-            return 'lógico';
-        }
-
-        if (operadoresMatematicos.includes(binario.operador.tipo)) {
-            const tiposNumericos = ['inteiro', 'número', 'real'];
-            if (tiposNumericos.includes(tipoEsquerda) && tiposNumericos.includes(tipoDireita)) {
-                // Se um dos lados é 'real', o resultado é 'real'
-                if (tipoEsquerda === 'real' || tipoDireita === 'real') {
-                    return 'real';
-                }
-
-                return 'número';
-            }
-
-            // Concatenação de textos
-            if (tipoEsquerda === 'texto' || tipoDireita === 'texto') {
-                return 'texto';
-            }
-        }
-
-        return 'qualquer';
-    }
-
     private verificarExistenciaConstruto(construto: Construto): void {
         if (construto instanceof Variavel) {
             if (!this.gerenciadorEscopos.buscar(construto.simbolo.lexema)) {
