@@ -28,10 +28,10 @@
         "node-fetch": "2"
     },
     "peerDependencies": {
-        "@designliquido/delegua": "^1.13.0"
+        "@designliquido/delegua": "^1.15.0"
     },
     "devDependencies": {
-        "@designliquido/delegua": "^1.13.0",
+        "@designliquido/delegua": "^1.15.0",
         "@types/estree": "^1.0.7",
         "@types/jest": "^30.0.0",
         "@types/node": "^25.0.2",
