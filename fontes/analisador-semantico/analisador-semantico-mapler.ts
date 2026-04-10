@@ -313,7 +313,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
         return Promise.resolve();
     }
 
-    visitarExpressaoDeAtribuicao(expressao: Atribuir) {
+    visitarExpressaoDeAtribuicao(expressao: Atribuir): Promise<void> {
         let simboloAlvo: SimboloInterface;
 
         switch (expressao.alvo.constructor) {
@@ -408,6 +408,8 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
                 }
             }
         }
+
+        return Promise.resolve();
     }
 
     async visitarDeclaracaoDeExpressao(declaracao: Expressao): Promise<any> {
@@ -899,7 +901,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
     }
 
     override visitarExpressaoRetornar(declaracao: Retorna): Promise<RetornoQuebra> {
-        return Promise.resolve(null);
+        return Promise.resolve(null as any);
     }
 
     override visitarExpressaoDeVariavel(expressao: Variavel | Construto): Promise<any> {
