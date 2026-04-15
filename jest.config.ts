@@ -4,8 +4,10 @@ export default async (): Promise<Config.InitialOptions> => {
     return {
         verbose: true,
         modulePathIgnorePatterns: ['<rootDir>/dist/'],
-        preset: 'ts-jest',
         testEnvironment: 'node',
+        transform: {
+            '^.+\\.tsx?$': ['ts-jest', { tsconfig: '<rootDir>/tsconfig.test.json' }],
+        },
         coverageReporters: ['json-summary', 'lcov', 'text', 'text-summary'],
         moduleNameMapper: {
             // Se for utilizar módulos linkados, comentar as linhas abaixo:
