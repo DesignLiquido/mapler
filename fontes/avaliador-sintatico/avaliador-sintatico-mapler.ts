@@ -748,6 +748,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
     }
 
     async resolverDeclaracaoForaDeBloco(): Promise<Declaracao | Declaracao[]> {
+        try {
         const simboloAtual = this.simbolos[this.atual];
         switch (simboloAtual.tipo) {
             case tiposDeSimbolos.COMENTARIO:
@@ -781,6 +782,33 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
                 }
 
                 return new Expressao(construtoExpressao);
+        }} catch (erro: any) {
+            this.sincronizar();
+            this.erros.push(erro);
+            return undefined;
+        }
+    }
+
+    /**
+     * Usado quando há erros na avaliação sintática.
+     * Garante que o avaliador sintático não entre em _loop_ infinito.
+     * @returns Sempre retorna `void`.
+     */
+    protected sincronizar(): void {
+        this.avancarEDevolverAnterior(); // avança além do token com erro
+
+        while (!this.estaNoFinal()) {
+            // Uma palavra-chave de início de declaração ou fecha-chave à frente:
+            // retorna SEM consumir o token, para que o chamador o analise normalmente.
+            switch (this.simbolos[this.atual].tipo) {
+                case tiposDeSimbolos.PARA:
+                case tiposDeSimbolos.SE:
+                case tiposDeSimbolos.ENQUANTO:
+                case tiposDeSimbolos.ESCREVER:
+                    return;
+            }
+
+            this.avancarEDevolverAnterior();
         }
     }
 
