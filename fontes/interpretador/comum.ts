@@ -1,6 +1,6 @@
 import { Escreva, EscrevaMesmaLinha } from '@designliquido/delegua';
-import { Binario, Construto } from '@designliquido/delegua/construtos';
-import { VisitanteComumInterface, SimboloInterface, VariavelInterface } from '@designliquido/delegua/interfaces';
+import { Binario } from '@designliquido/delegua/construtos';
+import { VisitanteComumInterface, SimboloInterface, VariavelInterface, ConstrutoInterface } from '@designliquido/delegua/interfaces';
 import { ErroEmTempoDeExecucao } from '@designliquido/delegua/excecoes';
 import { inferirTipoVariavel } from '@designliquido/delegua/inferenciador';
 
@@ -8,13 +8,13 @@ import { InterpretadorMapler } from './interpretador-mapler';
 
 import tiposDeSimbolos from '../tipos-de-simbolos/lexico-regular';
 
-async function avaliar(visitante: VisitanteComumInterface, expressao: Construto): Promise<any> {
+async function avaliar(visitante: VisitanteComumInterface, expressao: ConstrutoInterface): Promise<any> {
     return await expressao.aceitar(visitante);
 }
 
 async function avaliarArgumentosEscrevaMapler(
     interpretador: InterpretadorMapler,
-    argumentos: Construto[]
+    argumentos: ConstrutoInterface[]
 ): Promise<string> {
     let formatoTexto: string = '';
 

@@ -1,4 +1,3 @@
-import { RetornoLexador, RetornoAvaliadorSintatico } from '@designliquido/delegua/interfaces/retornos';
 import { AvaliadorSintaticoBase } from '@designliquido/delegua/avaliador-sintatico/avaliador-sintatico-base';
 import {
     Bloco,
@@ -14,7 +13,6 @@ import {
     InicioAlgoritmo,
     Para,
     Se,
-    Sustar,
     Var,
 } from '@designliquido/delegua/declaracoes';
 import {
@@ -23,7 +21,6 @@ import {
     AtribuicaoPorIndice,
     Atribuir,
     Binario,
-    Construto,
     FimPara,
     FormatacaoEscrita,
     FuncaoConstruto,
@@ -33,7 +30,7 @@ import {
     Unario,
     Variavel,
 } from '@designliquido/delegua/construtos';
-import { SimboloInterface } from '@designliquido/delegua/interfaces';
+import { ConstrutoInterface, RetornoAvaliadorSintaticoInterface, RetornoLexadorInterface, SimboloInterface } from '@designliquido/delegua/interfaces';
 import { Simbolo } from '@designliquido/delegua';
 
 import { ReferenciaFutura } from '../construtos/referencia-futura';
@@ -131,7 +128,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
      * Validação do segmento de declaração de variáveis (opcional).
      * @returns Vetor de Construtos para inicialização de variáveis.
      */
-    private validarSegmentoVariaveis(): Construto[] | Declaracao[] {
+    private validarSegmentoVariaveis(): ConstrutoInterface[] | Declaracao[] {
         const inicializacoes = [];
 
         while (!this.verificarTipoSimboloAtual(tiposDeSimbolos.INICIO)) {
@@ -243,7 +240,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         return this.atual === this.simbolos.length;
     }
 
-    async primario(): Promise<Construto> {
+    async primario(): Promise<ConstrutoInterface> {
         if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.FALSO)) {
             const simboloAnterior = this.simbolos[this.atual - 1];
             return new Literal(this.hashArquivo, Number(simboloAnterior.linha), false);
@@ -285,7 +282,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         throw this.erro(this.simbolos[this.atual], 'Esperado expressão.');
     }
 
-    async comparacaoIgualdade(): Promise<Construto> {
+    async comparacaoIgualdade(): Promise<ConstrutoInterface> {
         let expressao = await this.comparar();
 
         while (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.DIFERENTE, tiposDeSimbolos.IGUAL)) {
@@ -297,7 +294,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         return expressao;
     }
 
-    async ou(): Promise<Construto> {
+    async ou(): Promise<ConstrutoInterface> {
         let expressao = await this.e();
 
         while (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.OU)) {
@@ -313,7 +310,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
      * Método que resolve atribuições.
      * @returns Um construto do tipo `Atribuir`, `Conjunto` ou `AtribuicaoPorIndice`.
      */
-    async atribuir(): Promise<Construto> {
+    async atribuir(): Promise<ConstrutoInterface> {
         const expressao = await this.ou();
 
         if (this.verificarSeSimboloAtualEIgualA(tiposDeSimbolos.SETA_ATRIBUICAO)) {
@@ -340,7 +337,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         return expressao;
     }
 
-    async expressao(): Promise<Construto> {
+    async expressao(): Promise<ConstrutoInterface> {
         return this.atribuir();
     }
 
@@ -354,7 +351,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         return declaracoes.filter((d) => d);
     }
 
-    async chamar(): Promise<Construto> {
+    async chamar(): Promise<ConstrutoInterface> {
         let expressao = await this.primario();
 
         while (true) {
@@ -586,7 +583,7 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
 
         // Se o valor do passo é uma variável, o passo só pode ser resolvido em
         // tempo de execução.
-        let passo: Construto;
+        let passo: ConstrutoInterface;
         let resolverIncrementoEmExecucao = false;
         if (literalOuVariavelInicio instanceof Literal && literalOuVariavelFim instanceof Literal) {
             passo = await this.unario();
@@ -818,9 +815,9 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
      * @param hashArquivo Obrigatório por interface mas não usado aqui.
      */
     async analisar(
-        retornoLexador: RetornoLexador<SimboloInterface>,
+        retornoLexador: RetornoLexadorInterface<SimboloInterface>,
         hashArquivo: number
-    ): Promise<RetornoAvaliadorSintatico<Declaracao>> {
+    ): Promise<RetornoAvaliadorSintaticoInterface<Declaracao>> {
         this.erros = [];
         this.atual = 0;
         this.blocos = 0;
@@ -850,6 +847,6 @@ export class AvaliadorSintaticoMapler extends AvaliadorSintaticoBase {
         return {
             declaracoes: declaracoes.filter((d) => d),
             erros: this.erros,
-        } as RetornoAvaliadorSintatico<Declaracao>;
+        } as RetornoAvaliadorSintaticoInterface<Declaracao>;
     }
 }

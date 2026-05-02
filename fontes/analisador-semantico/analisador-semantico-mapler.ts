@@ -4,7 +4,6 @@ import {
     Atribuir,
     Binario,
     Chamada,
-    Construto,
     FormatacaoEscrita,
     FuncaoConstruto,
     Leia,
@@ -28,10 +27,9 @@ import {
     Retorna,
     Var,
 } from '@designliquido/delegua/declaracoes';
-import { ParametroInterface, SimboloInterface } from '@designliquido/delegua/interfaces';
-import { DiagnosticoAnalisadorSemantico, DiagnosticoSeveridade } from '@designliquido/delegua/interfaces/erros';
+import { ConstrutoInterface, ParametroInterface, RetornoAnalisadorSemanticoInterface, SimboloInterface } from '@designliquido/delegua/interfaces';
+import { DiagnosticoAnalisadorSemanticoInterface, DiagnosticoSeveridade } from '@designliquido/delegua/interfaces/erros';
 import { FuncaoHipoteticaInterface } from '@designliquido/delegua/interfaces/funcao-hipotetica-interface';
-import { RetornoAnalisadorSemantico } from '@designliquido/delegua/interfaces/retornos/retorno-analisador-semantico';
 import { RetornoQuebra } from '@designliquido/delegua/quebras';
 import { AnalisadorSemanticoBase } from '@designliquido/delegua/analisador-semantico/analisador-semantico-base';
 import { EscopoVariavel } from '@designliquido/delegua/analisador-semantico/escopo-variavel';
@@ -45,7 +43,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
     pilhaVariaveis: PilhaVariaveis;
     funcoes: { [nomeFuncao: string]: FuncaoHipoteticaInterface };
     atual: number;
-    diagnosticos: DiagnosticoAnalisadorSemantico[];
+    diagnosticos: DiagnosticoAnalisadorSemanticoInterface[];
 
     constructor() {
         super();
@@ -156,7 +154,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
         return this.verificarTipoDe(expressao.valor);
     }
 
-    private verificarTipoDe(valor: Construto): Promise<any> {
+    private verificarTipoDe(valor: ConstrutoInterface): Promise<any> {
         switch (valor.constructor) {
             case Agrupamento:
                 const valorAgrupamento = valor as Agrupamento;
@@ -178,7 +176,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
         return this.verificarFalhar(expressao.explicacao);
     }
 
-    private verificarFalhar(valor: Construto): Promise<any> {
+    private verificarFalhar(valor: ConstrutoInterface): Promise<any> {
         if (valor instanceof Binario) {
             this.verificarFalhar(valor.direita);
             this.verificarFalhar(valor.esquerda);
@@ -195,7 +193,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
     protected comparacaoArgumentosContraParametrosFuncao(
         simboloFuncao: SimboloInterface,
         parametros: ParametroInterface[],
-        argumentos: Construto[]
+        argumentos: ConstrutoInterface[]
     ) {
         if (parametros.length !== argumentos.length) {
             this.erro(
@@ -230,7 +228,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
 
     visitarChamadaPorArgumentoReferenciaFuncao(
         argumentoReferenciaFuncao: ArgumentoReferenciaFuncao,
-        argumentos: Construto[]
+        argumentos: ConstrutoInterface[]
     ) {
         const variavelCorrespondente: FuncaoConstruto =
             this.gerenciadorEscopos.buscar(argumentoReferenciaFuncao.simboloFuncao.lexema)?.valor;
@@ -245,7 +243,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
         );
     }
 
-    visitarChamadaPorReferenciaFuncao(referenciaFuncao: ReferenciaFuncao, argumentos: Construto[]) {
+    visitarChamadaPorReferenciaFuncao(referenciaFuncao: ReferenciaFuncao, argumentos: ConstrutoInterface[]) {
         const funcaoCorrespondente: FuncaoHipoteticaInterface =
             this.funcoes[referenciaFuncao.simboloFuncao.lexema];
         if (!funcaoCorrespondente) {
@@ -259,7 +257,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
         );
     }
 
-    visitarChamadaPorVariavel(entidadeChamadaVariavel: Variavel, argumentos: Construto[]) {
+    visitarChamadaPorVariavel(entidadeChamadaVariavel: Variavel, argumentos: ConstrutoInterface[]) {
         const variavel = entidadeChamadaVariavel as Variavel;
         const funcaoChamada =
             this.gerenciadorEscopos.buscar(variavel.simbolo.lexema) || this.funcoes[variavel.simbolo.lexema];
@@ -417,7 +415,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
     }
 
     override visitarDeclaracaoEscolha(declaracao: Escolha) {
-        const identificadorOuLiteral = declaracao.identificadorOuLiteral as Construto;
+        const identificadorOuLiteral = declaracao.identificadorOuLiteral as ConstrutoInterface;
         const tipo = identificadorOuLiteral.tipo;
 
         for (let caminho of declaracao.caminhos) {
@@ -460,7 +458,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
         return this.verificarCondicao(declaracao.condicao);
     }
 
-    private verificarCondicao(condicao: Construto): Promise<void> {
+    private verificarCondicao(condicao: ConstrutoInterface): Promise<void> {
         if (condicao instanceof Agrupamento) {
             return this.verificarCondicao(condicao.expressao);
         }
@@ -586,7 +584,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
      * Tenta avaliar uma expressão em tempo de compilação para detectar valores constantes
      * Retorna o valor se puder ser determinado, ou null caso contrário
      */
-    private avaliarExpressaoConstante(expressao: Construto): any {
+    private avaliarExpressaoConstante(expressao: ConstrutoInterface): any {
         if (expressao instanceof Literal) {
             return expressao.valor;
         }
@@ -661,7 +659,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
         }
     }
 
-    private verificarExistenciaConstruto(construto: Construto): void {
+    private verificarExistenciaConstruto(construto: ConstrutoInterface): void {
         if (construto instanceof Variavel) {
             if (!this.gerenciadorEscopos.buscar(construto.simbolo.lexema)) {
                 this.erro(
@@ -702,7 +700,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
         return Promise.resolve();
     }
 
-    private verificarLadoLogico(lado: Construto): void {
+    private verificarLadoLogico(lado: ConstrutoInterface): void {
         if (lado instanceof Variavel) {
             let variavel = lado as Variavel;
             this.verificarVariavelBinaria(variavel);
@@ -904,7 +902,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
         return Promise.resolve(null as any);
     }
 
-    override visitarExpressaoDeVariavel(expressao: Variavel | Construto): Promise<any> {
+    override visitarExpressaoDeVariavel(expressao: Variavel | ConstrutoInterface): Promise<any> {
         if (expressao instanceof Variavel) {
             return this.verificarVariavel(expressao);
         }
@@ -991,7 +989,7 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
         }
     }
 
-    async analisar(declaracoes: Declaracao[]): Promise<RetornoAnalisadorSemantico> {
+    async analisar(declaracoes: Declaracao[]): Promise<RetornoAnalisadorSemanticoInterface> {
         this.gerenciadorEscopos = new GerenciadorEscopos();
         this.atual = 0;
         this.diagnosticos = [];
@@ -1006,6 +1004,6 @@ export class AnalisadorSemanticoMapler extends AnalisadorSemanticoBase {
 
         return {
             diagnosticos: this.diagnosticos,
-        } as RetornoAnalisadorSemantico;
+        } as RetornoAnalisadorSemanticoInterface;
     }
 }

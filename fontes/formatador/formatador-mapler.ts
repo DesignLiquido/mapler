@@ -51,7 +51,6 @@ import {
     Unario,
     Vetor,
     Declaracao,
-    Construto,
     AcessoMetodo,
     AcessoPropriedade,
     ArgumentoReferenciaFuncao,
@@ -62,7 +61,7 @@ import {
     AcessoIntervaloVariavel,
     TuplaN,
 } from '@designliquido/delegua';
-import { VisitanteComumInterface } from '@designliquido/delegua/interfaces';
+import { ConstrutoInterface, VisitanteComumInterface } from '@designliquido/delegua/interfaces';
 import { ContinuarQuebra, RetornoQuebra, SustarQuebra } from '@designliquido/delegua/quebras';
 
 import { PilhaEscoposFormatacao } from './pilha-escopos-formatacao';
@@ -288,12 +287,12 @@ export class FormatadorMapler implements VisitanteComumInterface {
     }
 
     /* istanbul ignore next */
-    visitarDeclaracaoTendoComo(declaracao: TendoComo): void | Promise<any> {
+    visitarDeclaracaoTendoComo(_: TendoComo): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
 
     /* istanbul ignore next */
-    visitarDeclaracaoTente(declaracao: Tente): void | Promise<any> {
+    visitarDeclaracaoTente(_: Tente): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
 
@@ -316,7 +315,6 @@ export class FormatadorMapler implements VisitanteComumInterface {
                 break;
             default:
                 this.codigoFormatado += declaracao.tipo;
-                console.log(declaracao.tipo);
                 break;
         }
         this.codigoFormatado += `;${this.quebraLinha}`;
@@ -597,11 +595,11 @@ export class FormatadorMapler implements VisitanteComumInterface {
     }
 
     /* istanbul ignore next */
-    visitarExpressaoVetor(expressao: Vetor): void | Promise<any> {
+    visitarExpressaoVetor(_: Vetor): void | Promise<any> {
         throw new Error('Método não implementado.');
     }
 
-    formatarDeclaracaoOuConstruto(declaracaoOuConstruto: Declaracao | Construto): void {
+    formatarDeclaracaoOuConstruto(declaracaoOuConstruto: Declaracao | ConstrutoInterface): void {
         switch (declaracaoOuConstruto.constructor) {
             case Agrupamento:
                 this.visitarExpressaoAgrupamento(declaracaoOuConstruto as Agrupamento);

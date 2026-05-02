@@ -52,7 +52,6 @@ import {
     Unario,
     Vetor,
     Declaracao,
-    Construto,
     AcessoMetodo,
     AcessoPropriedade,
     ArgumentoReferenciaFuncao,
@@ -63,7 +62,7 @@ import {
     AcessoIntervaloVariavel,
     TuplaN,
 } from '@designliquido/delegua';
-import { VisitanteComumInterface } from '@designliquido/delegua/interfaces';
+import { ConstrutoInterface, VisitanteComumInterface } from '@designliquido/delegua/interfaces';
 import { ContinuarQuebra, RetornoQuebra, SustarQuebra } from '@designliquido/delegua/quebras';
 import { ReferenciaFutura } from '../construtos/referencia-futura';
 
@@ -154,7 +153,9 @@ export class ResolvedorMapler implements VisitanteComumInterface {
         return Promise.resolve(declaracao);
     }
 
-    visitarDeclaracaoDefinicaoFuncao(declaracao: FuncaoDeclaracao): void {}
+    visitarDeclaracaoDefinicaoFuncao(_: FuncaoDeclaracao): Promise<any> {
+        return Promise.resolve();
+    }
 
     visitarDeclaracaoEnquanto(declaracao: Enquanto): void | Promise<any> {
         return Promise.resolve(declaracao);
@@ -173,7 +174,7 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     }
 
     async visitarDeclaracaoFazer(declaracao: Fazer): Promise<any> {
-        declaracao.condicaoEnquanto = await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao.condicaoEnquanto);
+        declaracao.condicaoEnquanto = await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao.condicaoEnquanto) as ConstrutoInterface;
         declaracao.caminhoFazer = await this.visitarExpressaoBloco(declaracao.caminhoFazer);
         return declaracao;
     }
@@ -197,10 +198,10 @@ export class ResolvedorMapler implements VisitanteComumInterface {
         if (declaracao.inicializador) {
             declaracao.inicializador = await this.resolverDeclaracaoOuConstrutoForaDeBloco(
                 declaracao.inicializador as Declaracao
-            );
+            )  as Declaracao;
         }
 
-        declaracao.condicao = await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao.condicao);
+        declaracao.condicao = await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao.condicao) as ConstrutoInterface;
 
         return declaracao;
     }
@@ -210,11 +211,11 @@ export class ResolvedorMapler implements VisitanteComumInterface {
     }
 
     async visitarDeclaracaoSe(declaracao: Se): Promise<any> {
-        declaracao.condicao = await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao.condicao);
-        declaracao.caminhoEntao = await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao.caminhoEntao);
+        declaracao.condicao = await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao.condicao) as ConstrutoInterface;
+        declaracao.caminhoEntao = await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao.caminhoEntao) as Declaracao;
 
         if (declaracao.caminhoSenao) {
-            declaracao.caminhoSenao = await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao.caminhoSenao);
+            declaracao.caminhoSenao = await this.resolverDeclaracaoOuConstrutoForaDeBloco(declaracao.caminhoSenao) as Declaracao;
         }
 
         return declaracao;
@@ -358,7 +359,7 @@ export class ResolvedorMapler implements VisitanteComumInterface {
         return Promise.resolve(expressao);
     }
 
-    protected async resolverDeclaracaoOuConstrutoForaDeBloco(declaracaoOuConstruto: Declaracao | Construto) {
+    protected async resolverDeclaracaoOuConstrutoForaDeBloco(declaracaoOuConstruto: Declaracao | ConstrutoInterface): Promise<Declaracao | ConstrutoInterface> {
         switch (declaracaoOuConstruto.constructor) {
             case Bloco:
                 return this.visitarExpressaoBloco(declaracaoOuConstruto as Bloco);

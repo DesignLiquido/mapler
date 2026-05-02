@@ -1,4 +1,4 @@
-import { Construto, SimboloInterface } from '@designliquido/delegua';
+import { ConstrutoInterface, SimboloInterface } from '@designliquido/delegua';
 
 /**
  * Este construto apenas diz ao Avaliador Sintático que, ao final
@@ -7,7 +7,7 @@ import { Construto, SimboloInterface } from '@designliquido/delegua';
  * do código, e suas respectivas chamadas no ecossistema de Delégua
  * pedem o corpo da função (um objeto do tipo `FuncaoConstruto`).
  */
-export class ReferenciaFutura implements Construto {
+export class ReferenciaFutura implements ConstrutoInterface {
     linha: number;
     hashArquivo: number;
     identificadorFuturo: string;

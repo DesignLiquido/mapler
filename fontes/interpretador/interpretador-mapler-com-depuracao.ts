@@ -1,6 +1,7 @@
-import { AcessoIndiceVariavel, Binario, Construto, Leia, Variavel } from '@designliquido/delegua/construtos';
+import { AcessoIndiceVariavel, Binario, Leia, Variavel } from '@designliquido/delegua/construtos';
 import { EscrevaMesmaLinha, Escreva, InicioAlgoritmo } from '@designliquido/delegua/declaracoes';
 import { InterpretadorBaseComDepuracao } from '@designliquido/delegua/interpretador/depuracao';
+import { ConstrutoInterface } from '@designliquido/delegua/interfaces';
 
 import * as comum from './comum';
 
@@ -27,7 +28,7 @@ export class InterpretadorMaplerComDepuracao extends InterpretadorBaseComDepurac
         return await comum.visitarDeclaracaoEscrevaMesmaLinha(this, declaracao);
     }
 
-    async atribuirVariavel(expressao: Construto, valor: any): Promise<any> {
+    async atribuirVariavel(expressao: ConstrutoInterface, valor: any): Promise<any> {
         if (expressao instanceof Variavel) {
             this.pilhaEscoposExecucao.atribuirVariavel(expressao.simbolo, valor);
             return;
